@@ -136,16 +136,6 @@
         TgDQASA1MVpwzwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="InfoLabel.Text" xml:space="preserve">
-    <value>Please select all of the homebrew you would like to 
-install alongside everything else that is required. 
-(If Any)
-
-NOTE: Unless selected otherwise, this will format your 
-device to Fat32 and will remove everything from 
-the device. Please backup any data you would not like 
-erased from your device. </value>
-  </data>
   <data name="BadStickIcon.InitialImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAAABGdBTUEAALGPC/xhBQAA/8dJREFUeF5c

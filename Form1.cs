@@ -12,7 +12,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
 
     public partial class Form1 : Form
     {
-        private bool IsRunAsAdmin()
+        public bool IsRunAsAdmin()
         {
             using (var identity = WindowsIdentity.GetCurrent())
             {
@@ -21,7 +21,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
             }
         }
 
-        public static string currentver = "V1.0-Stable";
+        public static string currentver = "v1.4-Stable";
 
         public static async Task<bool> IsInternetAvailableAsync()
         {
@@ -50,12 +50,12 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 {
                     http.Timeout = TimeSpan.FromSeconds(5);
                     http.DefaultRequestHeaders.UserAgent.ParseAdd("BadStick-Updater/1.0");
-                    string state = await http.GetStringAsync("https://pastebin.com/raw/Wgp0YKMT");
+                    string state = await http.GetStringAsync("https://pastebin.com/raw/aJzwnQN4");
                     state = state.Trim().ToLowerInvariant();
 
                     if (state == "true")
                     {
-                        string messageText = await http.GetStringAsync("https://pastebin.com/raw/EqKcnG5t");
+                        string messageText = await http.GetStringAsync("https://pastebin.com/raw/aJzwnQN4");
                         messageText = messageText.Trim();
 
                         MessageBox.Show(messageText, "Community Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -85,7 +85,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
                     http.Timeout = TimeSpan.FromSeconds(5);
                     http.DefaultRequestHeaders.UserAgent.ParseAdd("BadStick-Updater/1.0");
 
-                    string latestVersion = await http.GetStringAsync("https://pastebin.com/raw/6LQSHFYF");
+                    string latestVersion = await http.GetStringAsync("https://pastebin.com/raw/SHpqTNY0");
                     latestVersion = latestVersion.Trim();
 
                     if (latestVersion != currentver)
@@ -98,7 +98,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
 
                         if (result == DialogResult.Yes)
                         {
-                            System.Diagnostics.Process.Start("https://github.com/32BitKlepto/BadStick");
+                            System.Diagnostics.Process.Start("https://github.com/LxcyDr0p/BadStick");
                         }
                     }
                 }
@@ -112,7 +112,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
         public Form1()
         {
             InitializeComponent();
-            shelbylabel1.Text = "BadStick " + Form1.currentver + " Created By Shelby <3";
+            VerLabel.Text = "BadStick " + Form1.currentver + "";
             _ = ComMSG();
         }
 
@@ -120,8 +120,8 @@ namespace Xbox_360_BadUpdate_USB_Tool
         {
             MessageBox.Show("This is for everyone who worked tirelessly to develop and bring BadUpdate to the community. " +
                 "Thank you to everyone for your undying dedication and devotion to this community. " +
-                "\n\n\nBadStick Developer & Creator:\n" +
-                "- Thomas Shelby (@1xShelby / Klepto) \n\n\nBadUpdate Exploit Credits:\n" +
+                "\n\n\nBadStick Developers & Creators:\n" +
+                "- Shelby (@1xShelby / Klepto) \n- Lxcy_Dr0p\n\n\nBadUpdate Exploit Credits:\n" +
                 "- Grimdoomer (Ryan Miceli)\n- InvoxiPlayGames (Emma)\n- kmx360 (Mate Kukri)\n\n\n" +
                 "Bill Gates (no jk. fuck you bill microdick)\n\n" +
                 "And thank you to all of the homebrew developers for bringing such " +
@@ -146,8 +146,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
             {
                 if (!IsRunAsAdmin())
                 {
-                    MessageBox.Show("This program must be run as administrator. The program will now exit.", "Admin Rights Required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
+                    MessageBox.Show("This program was not ran as an Administrator. You will not be able to format any USB device.", "No Admin", MessageBoxButtons.OK, MessageBoxIcon.Error);                  
                 }              
             }
             catch (Exception ex)
@@ -182,11 +181,6 @@ namespace Xbox_360_BadUpdate_USB_Tool
         private void Form1_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void discordLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("https://discord.gg/xMbKazpkvf");
         }
     }
 }

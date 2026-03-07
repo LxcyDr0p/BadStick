@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Xbox_360_BadStick;
 
 namespace Xbox_360_BadUpdate_USB_Tool
 {
@@ -26,15 +27,38 @@ namespace Xbox_360_BadUpdate_USB_Tool
         public string DevicePath = "";
         private int _totalSteps;
         private int _currentStep;
-        private Dictionary<string, CheckBox> _checkBoxDict; 
+        private Dictionary<string, CheckBox> _checkBoxDict;
+
+        public static string one = "Welcome to the Help and FaQ section. " +
+            "Here, you will find all the possible information you could need " +
+            "regarding the Bad Update exploit, homebrew, plugins and more.\r\n\r\n" +
+            "If you need answers to questions that are not listed here, please join my " +
+            "Discord and provide your questions there and I will try to get back to you " +
+            "as soon as possible! :)";
+        public static string two = "Test";
+        public static string tree = "Test2";
+
+        private bool IsRunAsAdmin()
+        {
+            using (var identity = WindowsIdentity.GetCurrent())
+            {
+                var principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+        }
 
         public Form2()
         {
             InitializeComponent();
             InitializeCheckBoxDict();
             LoadUsbDrives();
+            VerLabel.Text = "BadStick " + Form1.currentver + "";
 
-            ShelbyLabel.Text = "BadStick " + Form1.currentver + " Created By Shelby <3";
+            if (!IsRunAsAdmin())
+            {
+                skipformatToggle.Enabled = false;
+                skipformatToggle.Checked = true;
+            }
         }
 
         private class UsbDriveItem
@@ -209,26 +233,29 @@ namespace Xbox_360_BadUpdate_USB_Tool
             new PackageInfo { FileName = "Freestyle.zip", CheckBoxName = "FSDToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Freestyle.zip" },
             new PackageInfo { FileName = "Emerald.zip", CheckBoxName = "EmeraldToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Emerald.zip" },
             new PackageInfo { FileName = "FFPlay.zip", CheckBoxName = "FFPlayToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/FFPlay.zip" },
-            new PackageInfo { FileName = "GOD Unlocker.zip", CheckBoxName = "GODUnlockerToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/GOD Unlocker.zip" },
-            new PackageInfo { FileName = "HDDx Fixer.zip", CheckBoxName = "HDDxToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/HDDx Fixer.zip" },
+            new PackageInfo { FileName = "GOD.Unlocker.zip", CheckBoxName = "GODUnlockerToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/GOD.Unlocker.zip" },
+            new PackageInfo { FileName = "HDDx.Fixer.zip", CheckBoxName = "HDDxToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/HDDx.Fixer.zip" },
             new PackageInfo { FileName = "IngeniouX.zip", CheckBoxName = "IngeniousXToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/IngeniouX.zip" },
             new PackageInfo { FileName = "NXE2GOD.zip", CheckBoxName = "NXE2GODToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/NXE2GOD.zip" },
-            new PackageInfo { FileName = "Payload-XeUnshackle.zip", CheckBoxName = "xeunshackleToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Payload-XeUnshackle.zip" },
-            new PackageInfo { FileName = "Payload-FreeMyXe.zip", CheckBoxName = "freemyxeToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Payload.zip" },
+            new PackageInfo { FileName = "Payload-XeUnshackle.zip", CheckBoxName = "badavatarToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Payload-XeUnshackle.zip" },
+            new PackageInfo { FileName = "BUPayload-XeUnshackle.zip", CheckBoxName = "xeunshackleToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/BUPayload-XeUnshackle.zip" },
+            new PackageInfo { FileName = "ABadAvatarHDD.zip", CheckBoxName = "badavatarhddToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/ABadAvatarHDD.zip" },
+            new PackageInfo { FileName = "ABadMemUnit0.zip", CheckBoxName = "abadmemunitToggle", DownloadUrl = "https://github.com/LxcyDr0p/BadStick/releases/download/packages/ABadMemUnit0.zip" },
+            new PackageInfo { FileName = "BUPayload-FreeMyXe.zip", CheckBoxName = "freemyxeToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/BUPayload-FreeMyXe.zip" },
             new PackageInfo { FileName = "RBB.zip", CheckBoxName = null, DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/RBB/RBB.zip" },
             new PackageInfo { FileName = "Viper360.zip", CheckBoxName = "Viper360Toggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Viper360.zip" },
             new PackageInfo { FileName = "Xenu.zip", CheckBoxName = "XenuToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Xenu.zip" },
             new PackageInfo { FileName = "XeXLoader.zip", CheckBoxName = "XeXLoaderToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XeXLoader.zip" },
-            new PackageInfo { FileName = "XeXMenu.zip", CheckBoxName = "skipxexmenuToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XeXMenu.zip" },
+            new PackageInfo { FileName = "XeXMenu.zip", CheckBoxName = null, DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XeXMenu.zip" },
             new PackageInfo { FileName = "XM360.zip", CheckBoxName = "XM360Toggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XM360.zip" },
-            new PackageInfo { FileName = "XNA Offline.zip", CheckBoxName = "XNAToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XNA Offline.zip" },
-            new PackageInfo { FileName = "XPG Chameleon.zip", CheckBoxName = "XPGToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XPG Chameleon.zip" },
+            new PackageInfo { FileName = "XNA.Offline.zip", CheckBoxName = "XNAToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XNA.Offline.zip" },
+            new PackageInfo { FileName = "XPG.Chameleon.zip", CheckBoxName = "XPGToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XPG.Chameleon.zip" },
             new PackageInfo { FileName = "Plugins.zip", CheckBoxName = "PluginsToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Plugins.zip" },
             new PackageInfo { FileName = "CipherLive.zip", CheckBoxName = "CipherToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/CipherLive.zip" },
             new PackageInfo { FileName = "Flasher.zip", CheckBoxName = "flasherToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Flasher.zip" },
-            new PackageInfo { FileName = "Hacked.Compatibility.Files.zip", CheckBoxName = "haxcomToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Hacked.Compatibility.Files.zip" },
+            new PackageInfo { FileName = "Hacked.Compatibility.Files.zip", CheckBoxName = "haxfilesToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Hacked.Compatibility.Files.zip" },
             new PackageInfo { FileName = "Nfinite.zip", CheckBoxName = "NfiniteToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Nfinite.zip" },
-            new PackageInfo { FileName = "Original.Compatibility.Files.zip", CheckBoxName = "origToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Original.Compatibility.Files.zip" },
+            new PackageInfo { FileName = "Original.Compatibility.Files.zip", CheckBoxName = "origfilesToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Original.Compatibility.Files.zip" },
             new PackageInfo { FileName = "Proto.zip", CheckBoxName = "ProtoToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Proto.zip" },
             new PackageInfo { FileName = "TetheredLive.zip", CheckBoxName = "tetheredToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/TetheredLive.zip" },
             new PackageInfo { FileName = "X-Notify.Pack.zip", CheckBoxName = "xnotifyToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/X-Notify.Pack.zip" },
@@ -236,7 +263,8 @@ namespace Xbox_360_BadUpdate_USB_Tool
             new PackageInfo { FileName = "XBL.Kyuubii.zip", CheckBoxName = "KyuubiiToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XBL.Kyuubii.zip" },
             new PackageInfo { FileName = "XBLS.zip", CheckBoxName = "XBLSToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XBLS.zip" },
             new PackageInfo { FileName = "Xbox.One.Files.zip", CheckBoxName = "XB1Toggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/Xbox.One.Files.zip" },
-            new PackageInfo { FileName = "XEFU.Spoofer.zip", CheckBoxName = "xefuToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XEFU.Spoofer.zip" }        
+            new PackageInfo { FileName = "XEFU.Spoofer.zip", CheckBoxName = "xefuToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/XEFU.Spoofer.zip" },
+            new PackageInfo { FileName = "xbNetwork.zip", CheckBoxName = "xbNetworkToggle", DownloadUrl = "https://github.com/32BitKlepto/BadStick/releases/download/packages/xbNetwork.zip" }
         };
         private void InitializeCheckBoxDict()
         {
@@ -270,13 +298,28 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 { "XBLSToggle", XBLSToggle },
                 { "XB1Toggle", XB1Toggle },
                 { "xefuToggle", xefuToggle },
-                { "skipformatToggle", skipformatToggle },
-                { "skipmainfilesToggle", skipmainfilesToggle },
-                { "xeunshackleToggle", xeunshackleToggle },
-                { "freemyxeToggle", freemyxeToggle },
-                { "skipxexmenuToggle", skipxexmenuToggle }
+                { "XeXDashToggle", XeXDashToggle },
+                { "xbNetworkToggle", xbNetworkToggle },
+                { "badavatarToggle", badavatarToggle },
+                { "badavatarhddToggle", badavatarhddToggle },
+                { "abadmemunitToggle", abadmemunitToggle },
+                { "xeunshackleToggle", xeunshackleToggle }
             };
         }
+
+        private Dictionary<string, CheckBox> _excludedFromSelectAll;
+
+        private void InitializeExcludedCheckBoxes()
+        {
+            _excludedFromSelectAll = new Dictionary<string, CheckBox>
+            {
+                { "xeunshackleToggle", xeunshackleToggle },
+                { "skipformatToggle", skipformatToggle },
+                { "skipxexmenuToggle", skipxexmenuToggle },
+                { "skipmainfilesToggle", skipmainfilesToggle }
+            };
+        }
+
         private List<PackageInfo> GetSelectedPackages()
         {
             return _allPackages.Where(pkg =>
@@ -315,11 +358,11 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 if (skipMainFilesChecked)
                 {
                     string[] mainFilesToSkip = {
-                "Payload-XeUnshackle.zip",
-                "Payload-FreeMyXe.zip",
-                "XeXMenu.zip",
-                "RBB.zip"
-            };
+                        "Payload-XeUnshackle.zip",
+                        "Payload-FreeMyXe.zip",
+                        "XeXMenu.zip",
+                        "RBB.zip"
+                    };
                     if (mainFilesToSkip.Contains(pkg.FileName, StringComparer.OrdinalIgnoreCase))
                     {
                         continue;
@@ -479,6 +522,12 @@ namespace Xbox_360_BadUpdate_USB_Tool
 
         private async void StartBtn_Click(object sender, EventArgs e)
         {
+            if (badavatarToggle.Checked == true && badupdateToggle.Checked == true && abadmemunitToggle.Checked == true && badavatarhddToggle.Checked == true)
+            {
+                MessageBox.Show("Please select only one exploit method.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (DeviceList.SelectedItem == null)
             {
                 MessageBox.Show("Please select a USB device.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -609,6 +658,9 @@ namespace Xbox_360_BadUpdate_USB_Tool
         }
 
 
+
+
+
         private void SelectAllToggle_CheckedChanged(object sender, EventArgs e)
         {
             bool checkAll = SelectAllToggle.Checked;
@@ -640,17 +692,13 @@ namespace Xbox_360_BadUpdate_USB_Tool
         {
             MessageBox.Show("Enabling this will skip the main files that BadStick installs by default (Rock Band" +
                 " Blitz, the payload, and XeXMenu V1.2). This is useful if you already have your USB setup for the " +
-                "Bad Update exploit and only want to install other packages.", "What is this?", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "Bad Update exploit and only want to install other packages.", "What Is This?", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void skipformatQ_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            
-        }
-
-        private void discordserverBtn_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://discord.gg/xMbKazpkvf");
+            MessageBox.Show("Enabling this will skip the format process entirely, in case" +
+                " you don't want to format the drive at all (recommended regardless).", "What Is This?", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void badstickredditBtn_Click(object sender, EventArgs e)
@@ -675,7 +723,9 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 freemyxeToggle.Enabled = true;
                 xeunshackleToggle.Enabled = true;
                 skiprbbToggle.Enabled = true;
-                skipxexmenuToggle.Enabled = true;
+                badupdateToggle.Enabled = true;
+                badavatarToggle.Enabled = true;
+                badavatarhddToggle.Enabled = true;
                 return;
             }
             else
@@ -686,8 +736,12 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 xeunshackleToggle.Enabled = false;
                 skiprbbToggle.Checked = false;
                 skiprbbToggle.Enabled = false;
-                skipxexmenuToggle.Checked = false;
-                skipxexmenuToggle.Enabled = false;
+                badupdateToggle.Enabled = false;
+                badavatarToggle.Enabled = false;
+                badupdateToggle.Checked = false;
+                badavatarToggle.Checked = false;
+                badavatarhddToggle.Enabled = false;
+                badavatarhddToggle.Checked = false;
                 return;
             }
         }
@@ -696,12 +750,21 @@ namespace Xbox_360_BadUpdate_USB_Tool
         {
             if (!xeunshackleToggle.Checked)
             {
-                freemyxeToggle.Enabled = true;
+                freemyxeToggle.Enabled = true;             
             }
             else
             {
                 freemyxeToggle.Checked = false;
                 freemyxeToggle.Enabled= false;
+            }
+
+            if (!xeunshackleToggle.Checked && !freemyxeToggle.Checked)
+            {
+                StartBtn.Enabled = false;
+            }
+            else
+            {
+                StartBtn.Enabled = true;
             }
         }
 
@@ -715,6 +778,113 @@ namespace Xbox_360_BadUpdate_USB_Tool
             {
                 xeunshackleToggle.Checked = false;
                 xeunshackleToggle.Enabled = false;
+            }
+
+            if (!xeunshackleToggle.Checked && !freemyxeToggle.Checked)
+            {
+                StartBtn.Enabled = false;
+            }
+            else
+            {
+                StartBtn.Enabled = true;
+            }
+        }
+
+        private void editorBtn_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            inieditor editor = new inieditor();
+            editor.Show();
+        }
+
+        private void installallQ_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            MessageBox.Show("This will install all of the packages included within BadStick " +
+                "and install XeUnshackle by default (which is recommended to begin with).", "What Is This?", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void noticeLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            MessageBox.Show("It is highly recommended that you install XeUnshackle version of the " +
+                "BadUpdate payload, as this is far more reliable and stable than FreeMyXe. You will " +
+                "also not have to manually patch executable files (.xex/.xbes) manually. (Thank you to @jimdude7404 " +
+                "on Discord for pointing that out to me! :)", "Recommended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void badupdateToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!badupdateToggle.Checked)
+            {
+
+            }
+            else
+            {
+                skiprbbToggle.Enabled = true;
+                badavatarToggle.Enabled = true;
+            }
+        }
+
+        private void badavatarToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!badavatarToggle.Checked)
+            {
+                skiprbbToggle.Enabled = true;
+                skiprbbToggle.Checked = false;
+                xeunshackleToggle.Enabled = true;
+                freemyxeToggle.Enabled = true;
+            }
+            else
+            {
+                badupdateToggle.Checked = false;
+                skiprbbToggle.Checked = true;
+                skiprbbToggle.Enabled = false;
+                freemyxeToggle.Enabled = false;
+                xeunshackleToggle.Enabled = false;
+                freemyxeToggle.Checked = false;
+                xeunshackleToggle.Checked = false;
+            }
+        }
+
+        private void badavatarhddToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!badavatarhddToggle.Checked)
+            {
+                skiprbbToggle.Enabled = true;
+                skiprbbToggle.Checked = false;
+                xeunshackleToggle.Enabled = true;
+                freemyxeToggle.Enabled = true;
+            }
+            else
+            {
+                badupdateToggle.Checked = false;
+                skiprbbToggle.Checked = true;
+                skiprbbToggle.Enabled = false;
+                freemyxeToggle.Enabled = false;
+                xeunshackleToggle.Enabled = false;
+                freemyxeToggle.Checked = false;
+                xeunshackleToggle.Checked = false;
+            }
+        }
+
+        private void abadmemunitToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!abadmemunitToggle.Checked)
+            {
+
+                skiprbbToggle.Enabled = true;
+                skiprbbToggle.Checked = false;
+                xeunshackleToggle.Enabled = true;
+                freemyxeToggle.Enabled = true;
+            }
+            else
+            {
+                skiprbbToggle.Checked = true;
+                skiprbbToggle.Enabled = false;
+                freemyxeToggle.Enabled = false;
+                xeunshackleToggle.Enabled = false;
+                freemyxeToggle.Checked = false;
+                xeunshackleToggle.Checked = false;
             }
         }
     }

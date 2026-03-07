@@ -33,7 +33,7 @@
             this.FSDToggle = new System.Windows.Forms.CheckBox();
             this.StartBtn = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.ShelbyLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.VerLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
@@ -41,8 +41,6 @@
             this.badstickredditBtn = new System.Windows.Forms.ToolStripMenuItem();
             this.reddit360Btn = new System.Windows.Forms.ToolStripMenuItem();
             this.githubpageBtn = new System.Windows.Forms.ToolStripMenuItem();
-            this.discordServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.discordserverBtn = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitBtn = new System.Windows.Forms.Button();
             this.DeviceList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -63,21 +61,32 @@
             this.SelectAllToggle = new System.Windows.Forms.CheckBox();
             this.PluginsToggle = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.noticeLabel = new System.Windows.Forms.LinkLabel();
+            this.skipxexmenuToggle = new System.Windows.Forms.CheckBox();
+            this.xeunshackleToggle = new System.Windows.Forms.CheckBox();
+            this.freemyxeToggle = new System.Windows.Forms.CheckBox();
             this.installallQ = new System.Windows.Forms.LinkLabel();
+            this.skiprbbToggle = new System.Windows.Forms.CheckBox();
             this.skipformatQ = new System.Windows.Forms.LinkLabel();
-            this.skipmainQ = new System.Windows.Forms.LinkLabel();
             this.skipmainfilesToggle = new System.Windows.Forms.CheckBox();
+            this.skipmainQ = new System.Windows.Forms.LinkLabel();
             this.skipformatToggle = new System.Windows.Forms.CheckBox();
             this.RefDrivesBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label8 = new System.Windows.Forms.Label();
-            this.InfoLabel = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.badavatarhddToggle = new System.Windows.Forms.CheckBox();
+            this.badupdateToggle = new System.Windows.Forms.CheckBox();
+            this.badavatarToggle = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.editorBtn = new System.Windows.Forms.Button();
+            this.warningLabel = new System.Windows.Forms.Label();
             this.BadStickIcon = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.xelllaunchToggle = new System.Windows.Forms.CheckBox();
             this.flasherToggle = new System.Windows.Forms.CheckBox();
             this.widBtn = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
@@ -103,15 +112,13 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.warningLabel = new System.Windows.Forms.Label();
-            this.xeunshackleToggle = new System.Windows.Forms.CheckBox();
-            this.freemyxeToggle = new System.Windows.Forms.CheckBox();
-            this.skiprbbToggle = new System.Windows.Forms.CheckBox();
-            this.skipxexmenuToggle = new System.Windows.Forms.CheckBox();
+            this.abadmemunitToggle = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BadStickIcon)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -157,7 +164,7 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShelbyLabel,
+            this.VerLabel,
             this.StatusLabel,
             this.ProgressBar,
             this.toolStripSplitButton1});
@@ -168,11 +175,11 @@
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // ShelbyLabel
+            // VerLabel
             // 
-            this.ShelbyLabel.Name = "ShelbyLabel";
-            this.ShelbyLabel.Size = new System.Drawing.Size(199, 17);
-            this.ShelbyLabel.Text = "BadStick V1.4B Created By Shelby <3";
+            this.VerLabel.Name = "VerLabel";
+            this.VerLabel.Size = new System.Drawing.Size(174, 17);
+            this.VerLabel.Text = "BadStick V1.4-Stable By Lxcy <3";
             // 
             // StatusLabel
             // 
@@ -190,8 +197,7 @@
             this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.redditToolStripMenuItem,
-            this.githubpageBtn,
-            this.discordServerToolStripMenuItem});
+            this.githubpageBtn});
             this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
             this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripSplitButton1.Name = "toolStripSplitButton1";
@@ -227,21 +233,6 @@
             this.githubpageBtn.Size = new System.Drawing.Size(180, 22);
             this.githubpageBtn.Text = "GitHub";
             this.githubpageBtn.Click += new System.EventHandler(this.githubpageBtn_Click_1);
-            // 
-            // discordServerToolStripMenuItem
-            // 
-            this.discordServerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.discordserverBtn});
-            this.discordServerToolStripMenuItem.Name = "discordServerToolStripMenuItem";
-            this.discordServerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.discordServerToolStripMenuItem.Text = "Discord ";
-            // 
-            // discordserverBtn
-            // 
-            this.discordserverBtn.Name = "discordserverBtn";
-            this.discordserverBtn.Size = new System.Drawing.Size(180, 22);
-            this.discordserverBtn.Text = "Discord Server";
-            this.discordserverBtn.Click += new System.EventHandler(this.discordserverBtn_Click);
             // 
             // ExitBtn
             // 
@@ -445,6 +436,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.noticeLabel);
             this.groupBox4.Controls.Add(this.skipxexmenuToggle);
             this.groupBox4.Controls.Add(this.xeunshackleToggle);
             this.groupBox4.Controls.Add(this.freemyxeToggle);
@@ -463,6 +455,53 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Settings";
             // 
+            // noticeLabel
+            // 
+            this.noticeLabel.AutoSize = true;
+            this.noticeLabel.LinkColor = System.Drawing.Color.Red;
+            this.noticeLabel.Location = new System.Drawing.Point(106, 17);
+            this.noticeLabel.Name = "noticeLabel";
+            this.noticeLabel.Size = new System.Drawing.Size(16, 13);
+            this.noticeLabel.TabIndex = 25;
+            this.noticeLabel.TabStop = true;
+            this.noticeLabel.Text = "!!!";
+            this.noticeLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.noticeLabel_LinkClicked);
+            // 
+            // skipxexmenuToggle
+            // 
+            this.skipxexmenuToggle.AutoSize = true;
+            this.skipxexmenuToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.skipxexmenuToggle.Location = new System.Drawing.Point(6, 62);
+            this.skipxexmenuToggle.Name = "skipxexmenuToggle";
+            this.skipxexmenuToggle.Size = new System.Drawing.Size(97, 17);
+            this.skipxexmenuToggle.TabIndex = 24;
+            this.skipxexmenuToggle.Text = "Skip XeXMenu";
+            this.skipxexmenuToggle.UseVisualStyleBackColor = true;
+            // 
+            // xeunshackleToggle
+            // 
+            this.xeunshackleToggle.AutoSize = true;
+            this.xeunshackleToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.xeunshackleToggle.Location = new System.Drawing.Point(13, 16);
+            this.xeunshackleToggle.Name = "xeunshackleToggle";
+            this.xeunshackleToggle.Size = new System.Drawing.Size(90, 17);
+            this.xeunshackleToggle.TabIndex = 22;
+            this.xeunshackleToggle.Text = "XeUnshackle";
+            this.xeunshackleToggle.UseVisualStyleBackColor = true;
+            this.xeunshackleToggle.CheckedChanged += new System.EventHandler(this.xeunshackleToggle_CheckedChanged);
+            // 
+            // freemyxeToggle
+            // 
+            this.freemyxeToggle.AutoSize = true;
+            this.freemyxeToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.freemyxeToggle.Location = new System.Drawing.Point(29, 39);
+            this.freemyxeToggle.Name = "freemyxeToggle";
+            this.freemyxeToggle.Size = new System.Drawing.Size(74, 17);
+            this.freemyxeToggle.TabIndex = 21;
+            this.freemyxeToggle.Text = "FreeMyXe";
+            this.freemyxeToggle.UseVisualStyleBackColor = true;
+            this.freemyxeToggle.CheckedChanged += new System.EventHandler(this.freemyxeToggle_CheckedChanged);
+            // 
             // installallQ
             // 
             this.installallQ.AutoSize = true;
@@ -472,6 +511,18 @@
             this.installallQ.TabIndex = 20;
             this.installallQ.TabStop = true;
             this.installallQ.Text = "?";
+            this.installallQ.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.installallQ_LinkClicked);
+            // 
+            // skiprbbToggle
+            // 
+            this.skiprbbToggle.AutoSize = true;
+            this.skiprbbToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.skiprbbToggle.Location = new System.Drawing.Point(-1, 85);
+            this.skiprbbToggle.Name = "skiprbbToggle";
+            this.skiprbbToggle.Size = new System.Drawing.Size(104, 17);
+            this.skiprbbToggle.TabIndex = 23;
+            this.skiprbbToggle.Text = "Skip Rock Band";
+            this.skiprbbToggle.UseVisualStyleBackColor = true;
             // 
             // skipformatQ
             // 
@@ -484,17 +535,6 @@
             this.skipformatQ.Text = "?";
             this.skipformatQ.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.skipformatQ_LinkClicked);
             // 
-            // skipmainQ
-            // 
-            this.skipmainQ.AutoSize = true;
-            this.skipmainQ.Location = new System.Drawing.Point(109, 108);
-            this.skipmainQ.Name = "skipmainQ";
-            this.skipmainQ.Size = new System.Drawing.Size(13, 13);
-            this.skipmainQ.TabIndex = 18;
-            this.skipmainQ.TabStop = true;
-            this.skipmainQ.Text = "?";
-            this.skipmainQ.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.skipmainQ_LinkClicked);
-            // 
             // skipmainfilesToggle
             // 
             this.skipmainfilesToggle.AutoSize = true;
@@ -506,6 +546,17 @@
             this.skipmainfilesToggle.Text = "Skip Main Files";
             this.skipmainfilesToggle.UseVisualStyleBackColor = true;
             this.skipmainfilesToggle.CheckedChanged += new System.EventHandler(this.skipmainfilesToggle_CheckedChanged);
+            // 
+            // skipmainQ
+            // 
+            this.skipmainQ.AutoSize = true;
+            this.skipmainQ.Location = new System.Drawing.Point(109, 108);
+            this.skipmainQ.Name = "skipmainQ";
+            this.skipmainQ.Size = new System.Drawing.Size(13, 13);
+            this.skipmainQ.TabIndex = 18;
+            this.skipmainQ.TabStop = true;
+            this.skipmainQ.Text = "?";
+            this.skipmainQ.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.skipmainQ_LinkClicked);
             // 
             // skipformatToggle
             // 
@@ -544,9 +595,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.warningLabel);
-            this.tabPage1.Controls.Add(this.label8);
-            this.tabPage1.Controls.Add(this.InfoLabel);
             this.tabPage1.Controls.Add(this.BadStickIcon);
             this.tabPage1.Controls.Add(this.DeviceList);
             this.tabPage1.Controls.Add(this.groupBox4);
@@ -561,37 +612,96 @@
             this.tabPage1.Text = "Install";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label8
+            // groupBox2
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(415, 144);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(240, 39);
-            this.label8.TabIndex = 21;
-            this.label8.Text = "* Unless otherwise selected, Rock Band Blitz and\r\nthe BadUpdate Payload are autom" +
-    "atically \r\ninstalled. Same with XeXMenu V1.2. ";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.groupBox2.Controls.Add(this.abadmemunitToggle);
+            this.groupBox2.Controls.Add(this.badavatarhddToggle);
+            this.groupBox2.Controls.Add(this.badupdateToggle);
+            this.groupBox2.Controls.Add(this.badavatarToggle);
+            this.groupBox2.Location = new System.Drawing.Point(565, 89);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(128, 91);
+            this.groupBox2.TabIndex = 24;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Exploit Method";
             // 
-            // InfoLabel
+            // badavatarhddToggle
             // 
-            this.InfoLabel.AutoSize = true;
-            this.InfoLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.InfoLabel.Location = new System.Drawing.Point(357, 6);
-            this.InfoLabel.Name = "InfoLabel";
-            this.InfoLabel.Size = new System.Drawing.Size(332, 128);
-            this.InfoLabel.TabIndex = 19;
-            this.InfoLabel.Text = resources.GetString("InfoLabel.Text");
-            this.InfoLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.badavatarhddToggle.AutoSize = true;
+            this.badavatarhddToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.badavatarhddToggle.Location = new System.Drawing.Point(10, 55);
+            this.badavatarhddToggle.Name = "badavatarhddToggle";
+            this.badavatarhddToggle.Size = new System.Drawing.Size(100, 17);
+            this.badavatarhddToggle.TabIndex = 28;
+            this.badavatarhddToggle.Text = "BadAvatarHDD";
+            this.badavatarhddToggle.UseVisualStyleBackColor = true;
+            this.badavatarhddToggle.CheckedChanged += new System.EventHandler(this.badavatarhddToggle_CheckedChanged);
+            // 
+            // badupdateToggle
+            // 
+            this.badupdateToggle.AutoSize = true;
+            this.badupdateToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.badupdateToggle.Location = new System.Drawing.Point(30, 19);
+            this.badupdateToggle.Name = "badupdateToggle";
+            this.badupdateToggle.Size = new System.Drawing.Size(80, 17);
+            this.badupdateToggle.TabIndex = 27;
+            this.badupdateToggle.Text = "BadUpdate";
+            this.badupdateToggle.UseVisualStyleBackColor = true;
+            this.badupdateToggle.CheckedChanged += new System.EventHandler(this.badupdateToggle_CheckedChanged);
+            // 
+            // badavatarToggle
+            // 
+            this.badavatarToggle.AutoSize = true;
+            this.badavatarToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.badavatarToggle.Location = new System.Drawing.Point(34, 37);
+            this.badavatarToggle.Name = "badavatarToggle";
+            this.badavatarToggle.Size = new System.Drawing.Size(76, 17);
+            this.badavatarToggle.TabIndex = 26;
+            this.badavatarToggle.Text = "BadAvatar";
+            this.badavatarToggle.UseVisualStyleBackColor = true;
+            this.badavatarToggle.CheckedChanged += new System.EventHandler(this.badavatarToggle_CheckedChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.editorBtn);
+            this.groupBox1.Location = new System.Drawing.Point(564, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(129, 77);
+            this.groupBox1.TabIndex = 23;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Other";
+            // 
+            // editorBtn
+            // 
+            this.editorBtn.Font = new System.Drawing.Font("Consolas", 8.25F);
+            this.editorBtn.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.editorBtn.Location = new System.Drawing.Point(7, 19);
+            this.editorBtn.Name = "editorBtn";
+            this.editorBtn.Size = new System.Drawing.Size(116, 54);
+            this.editorBtn.TabIndex = 0;
+            this.editorBtn.Text = ".ini Configuration";
+            this.editorBtn.UseVisualStyleBackColor = true;
+            this.editorBtn.Click += new System.EventHandler(this.editorBtn_Click);
+            // 
+            // warningLabel
+            // 
+            this.warningLabel.AutoSize = true;
+            this.warningLabel.ForeColor = System.Drawing.Color.Red;
+            this.warningLabel.Location = new System.Drawing.Point(387, 311);
+            this.warningLabel.Name = "warningLabel";
+            this.warningLabel.Size = new System.Drawing.Size(176, 13);
+            this.warningLabel.TabIndex = 22;
+            this.warningLabel.Text = "Warning: No Fat32 Media Detected";
             // 
             // BadStickIcon
             // 
             this.BadStickIcon.BackColor = System.Drawing.Color.Transparent;
             this.BadStickIcon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.BadStickIcon.Image = global::Xbox_360_BadStick.Properties.Resources.BadStick_Icon;
+            this.BadStickIcon.Image = global::Xbox_360_BadStick.Properties.Resources.BadStick_Tilted;
             this.BadStickIcon.InitialImage = ((System.Drawing.Image)(resources.GetObject("BadStickIcon.InitialImage")));
-            this.BadStickIcon.Location = new System.Drawing.Point(6, 6);
+            this.BadStickIcon.Location = new System.Drawing.Point(156, 3);
             this.BadStickIcon.Name = "BadStickIcon";
-            this.BadStickIcon.Size = new System.Drawing.Size(345, 315);
+            this.BadStickIcon.Size = new System.Drawing.Size(310, 299);
             this.BadStickIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.BadStickIcon.TabIndex = 20;
             this.BadStickIcon.TabStop = false;
@@ -639,6 +749,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.xelllaunchToggle);
             this.tabPage3.Controls.Add(this.flasherToggle);
             this.tabPage3.Controls.Add(this.widBtn);
             this.tabPage3.Controls.Add(this.label2);
@@ -656,6 +767,17 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Homebrew";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // xelllaunchToggle
+            // 
+            this.xelllaunchToggle.AutoSize = true;
+            this.xelllaunchToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.xelllaunchToggle.Location = new System.Drawing.Point(573, 190);
+            this.xelllaunchToggle.Name = "xelllaunchToggle";
+            this.xelllaunchToggle.Size = new System.Drawing.Size(82, 17);
+            this.xelllaunchToggle.TabIndex = 19;
+            this.xelllaunchToggle.Text = "Xell Launch";
+            this.xelllaunchToggle.UseVisualStyleBackColor = true;
             // 
             // flasherToggle
             // 
@@ -859,7 +981,7 @@
             this.xefuToggle.Name = "xefuToggle";
             this.xefuToggle.Size = new System.Drawing.Size(95, 31);
             this.xefuToggle.TabIndex = 24;
-            this.xefuToggle.Text = "XEFU Spoofer V3";
+            this.xefuToggle.Text = "XEFU Spoofer V4";
             this.xefuToggle.UseVisualStyleBackColor = true;
             // 
             // haxfilesToggle
@@ -935,61 +1057,17 @@
             this.pictureBox4.TabIndex = 17;
             this.pictureBox4.TabStop = false;
             // 
-            // warningLabel
+            // abadmemunitToggle
             // 
-            this.warningLabel.AutoSize = true;
-            this.warningLabel.ForeColor = System.Drawing.Color.Red;
-            this.warningLabel.Location = new System.Drawing.Point(383, 308);
-            this.warningLabel.Name = "warningLabel";
-            this.warningLabel.Size = new System.Drawing.Size(176, 13);
-            this.warningLabel.TabIndex = 22;
-            this.warningLabel.Text = "Warning: No Fat32 Media Detected";
-            // 
-            // xeunshackleToggle
-            // 
-            this.xeunshackleToggle.AutoSize = true;
-            this.xeunshackleToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.xeunshackleToggle.Location = new System.Drawing.Point(13, 16);
-            this.xeunshackleToggle.Name = "xeunshackleToggle";
-            this.xeunshackleToggle.Size = new System.Drawing.Size(90, 17);
-            this.xeunshackleToggle.TabIndex = 22;
-            this.xeunshackleToggle.Text = "XeUnshackle";
-            this.xeunshackleToggle.UseVisualStyleBackColor = true;
-            this.xeunshackleToggle.CheckedChanged += new System.EventHandler(this.xeunshackleToggle_CheckedChanged);
-            // 
-            // freemyxeToggle
-            // 
-            this.freemyxeToggle.AutoSize = true;
-            this.freemyxeToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.freemyxeToggle.Location = new System.Drawing.Point(29, 39);
-            this.freemyxeToggle.Name = "freemyxeToggle";
-            this.freemyxeToggle.Size = new System.Drawing.Size(74, 17);
-            this.freemyxeToggle.TabIndex = 21;
-            this.freemyxeToggle.Text = "FreeMyXe";
-            this.freemyxeToggle.UseVisualStyleBackColor = true;
-            this.freemyxeToggle.CheckedChanged += new System.EventHandler(this.freemyxeToggle_CheckedChanged);
-            // 
-            // skiprbbToggle
-            // 
-            this.skiprbbToggle.AutoSize = true;
-            this.skiprbbToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.skiprbbToggle.Location = new System.Drawing.Point(-1, 85);
-            this.skiprbbToggle.Name = "skiprbbToggle";
-            this.skiprbbToggle.Size = new System.Drawing.Size(104, 17);
-            this.skiprbbToggle.TabIndex = 23;
-            this.skiprbbToggle.Text = "Skip Rock Band";
-            this.skiprbbToggle.UseVisualStyleBackColor = true;
-            // 
-            // skipxexmenuToggle
-            // 
-            this.skipxexmenuToggle.AutoSize = true;
-            this.skipxexmenuToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.skipxexmenuToggle.Location = new System.Drawing.Point(6, 62);
-            this.skipxexmenuToggle.Name = "skipxexmenuToggle";
-            this.skipxexmenuToggle.Size = new System.Drawing.Size(97, 17);
-            this.skipxexmenuToggle.TabIndex = 24;
-            this.skipxexmenuToggle.Text = "Skip XeXMenu";
-            this.skipxexmenuToggle.UseVisualStyleBackColor = true;
+            this.abadmemunitToggle.AutoSize = true;
+            this.abadmemunitToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.abadmemunitToggle.Location = new System.Drawing.Point(16, 73);
+            this.abadmemunitToggle.Name = "abadmemunitToggle";
+            this.abadmemunitToggle.Size = new System.Drawing.Size(94, 17);
+            this.abadmemunitToggle.TabIndex = 29;
+            this.abadmemunitToggle.Text = "ABadMemUnit";
+            this.abadmemunitToggle.UseVisualStyleBackColor = true;
+            this.abadmemunitToggle.CheckedChanged += new System.EventHandler(this.abadmemunitToggle_CheckedChanged);
             // 
             // Form2
             // 
@@ -1012,6 +1090,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.BadStickIcon)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
@@ -1052,7 +1133,7 @@
         private System.Windows.Forms.CheckBox FFPlayToggle;
         private System.Windows.Forms.CheckBox GODUnlockerToggle;
         private System.Windows.Forms.CheckBox XM360Toggle;
-        private System.Windows.Forms.ToolStripStatusLabel ShelbyLabel;
+        private System.Windows.Forms.ToolStripStatusLabel VerLabel;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.CheckBox ExitToggle;
         private System.Windows.Forms.CheckBox SelectAllToggle;
@@ -1065,7 +1146,6 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.Label InfoLabel;
         private System.Windows.Forms.PictureBox BadStickIcon;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label3;
@@ -1093,14 +1173,11 @@
         private System.Windows.Forms.CheckBox flasherToggle;
         private System.Windows.Forms.CheckBox tetheredToggle;
         private System.Windows.Forms.ToolStripProgressBar ProgressBar;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ToolStripSplitButton toolStripSplitButton1;
         private System.Windows.Forms.ToolStripMenuItem redditToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem badstickredditBtn;
         private System.Windows.Forms.ToolStripMenuItem reddit360Btn;
         private System.Windows.Forms.ToolStripMenuItem githubpageBtn;
-        private System.Windows.Forms.ToolStripMenuItem discordServerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem discordserverBtn;
         private System.Windows.Forms.LinkLabel skipformatQ;
         private System.Windows.Forms.LinkLabel skipmainQ;
         private System.Windows.Forms.CheckBox skipmainfilesToggle;
@@ -1111,5 +1188,14 @@
         private System.Windows.Forms.CheckBox freemyxeToggle;
         private System.Windows.Forms.CheckBox skiprbbToggle;
         private System.Windows.Forms.CheckBox skipxexmenuToggle;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button editorBtn;
+        private System.Windows.Forms.LinkLabel noticeLabel;
+        private System.Windows.Forms.CheckBox xelllaunchToggle;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox badupdateToggle;
+        private System.Windows.Forms.CheckBox badavatarToggle;
+        private System.Windows.Forms.CheckBox badavatarhddToggle;
+        private System.Windows.Forms.CheckBox abadmemunitToggle;
     }
 }
