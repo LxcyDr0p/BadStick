@@ -73,6 +73,16 @@ namespace Xbox_360_BadStick.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BadStick_Tilted {
+            get {
+                object obj = ResourceManager.GetObject("BadStick Tilted", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap bugif {
             get {
                 object obj = ResourceManager.GetObject("bugif", resourceCulture);
