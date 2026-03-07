@@ -21,8 +21,13 @@ namespace Xbox_360_BadUpdate_USB_Tool
 {
     public partial class Form2 : Form
     {
-
-        private readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new HttpClient
+        {
+            DefaultRequestHeaders =
+            {
+                UserAgent = { ParseAdd("Mozilla/5.0 (compatible; BadStickTool/1.0)") }
+            } // This way, you don't have to keep re-instancing the HTTPClient, which can lead to some socket issues :0 --- You also never used this before and instead made a new client each download.
+        };
         public bool DriveSet = true;
         public string DevicePath = "";
         private int _totalSteps;
@@ -147,74 +152,70 @@ namespace Xbox_360_BadUpdate_USB_Tool
 
         public async Task DownloadFileAsync(string url, string destinationFilePath, IProgress<int> progress = null)
         {
-            using (var client = new HttpClient())
+            // Use the _httpClient directly without disposing it. -- Small change but needed when using the static _httpClient.
+            using (var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; BadStickTool/1.0)");
+                response.EnsureSuccessStatusCode();
 
-                using (var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                var total = response.Content.Headers.ContentLength ?? -1L;
+                var canReportProgress = total != -1 && progress != null;
+
+                using (var contentStream = await response.Content.ReadAsStreamAsync())
+                using (var fileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
                 {
-                    response.EnsureSuccessStatusCode();
-
-                    var total = response.Content.Headers.ContentLength ?? -1L;
-                    var canReportProgress = total != -1 && progress != null;
-
-                    using (var contentStream = await response.Content.ReadAsStreamAsync())
-                    using (var fileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    var totalRead = 0L;
+                    var buffer = new byte[8192];
+                    int read;
+                    while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                     {
-                        var totalRead = 0L;
-                        var buffer = new byte[8192];
-                        int read;
-                        while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                        {
-                            await fileStream.WriteAsync(buffer, 0, read);
-                            totalRead += read;
+                        await fileStream.WriteAsync(buffer, 0, read);
+                        totalRead += read;
 
-                            if (canReportProgress)
-                            {
-                                int percent = (int)((totalRead * 100L) / total);
-                                progress.Report(percent);
-                            }
+                        if (canReportProgress)
+                        {
+                            int percent = (int)((totalRead * 100L) / total);
+                            progress.Report(percent);
                         }
                     }
                 }
             }
         }
-
+        
         private Task ExtractPackageAsync(string pkgFilePath, string destinationPath, IProgress<int> progress = null)
         {
-            return Task.Run(() =>
+            // Open ZIP file stream asynchronously instead of the fake-async that it was before.
+            // You could include Cancellation Tokens in this but I don't think its needed due to the small file sizes.
+            await using var fileStream = File.OpenRead(pkgFilePath);
+            using var archive = new ZipArchive(fileStream, ZipArchiveMode.Read);
+        
+            int totalEntries = archive.Entries.Count;
+            int processedEntries = 0;
+        
+            foreach (var entry in archive.Entries)
             {
-                using (var archive = ZipFile.OpenRead(pkgFilePath))
+        
+                var fullPath = Path.Combine(destinationPath, entry.FullName);
+                var directory = Path.GetDirectoryName(fullPath);
+        
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
-                    int totalEntries = archive.Entries.Count;
-                    int processedEntries = 0;
-
-                    foreach (var entry in archive.Entries)
-                    {
-                        var fullPath = Path.Combine(destinationPath, entry.FullName);
-
-                        var directory = Path.GetDirectoryName(fullPath);
-
-                        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                        {
-                            Directory.CreateDirectory(directory);
-                        }
-
-                        if (!string.IsNullOrEmpty(entry.Name))
-                        {
-                            entry.ExtractToFile(fullPath, overwrite: true);
-                        }
-
-                        processedEntries++;
-
-                        if (progress != null)
-                        {
-                            int percent = (int)((processedEntries * 100L) / totalEntries);
-                            progress.Report(percent);
-                        }
-                    }
+                    Directory.CreateDirectory(directory);
                 }
-            });
+        
+                if (!string.IsNullOrEmpty(entry.Name))
+                {
+                    await using var entryStream = entry.Open();
+                    await using var outputStream = File.Create(fullPath);
+                    await entryStream.CopyToAsync(outputStream);
+                }
+        
+                processedEntries++;
+                if (progress != null) // Kept progress. If you didn't want to use this you could do all this extract stuff with a new method ExtractToDirectoryAsync, just FYI.
+                {
+                    int percent = (int)((processedEntries * 100L) / totalEntries);
+                    progress.Report(percent);
+                }
+            }
         }
 
 
@@ -889,3 +890,4 @@ namespace Xbox_360_BadUpdate_USB_Tool
         }
     }
 }
+
