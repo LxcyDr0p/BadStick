@@ -16,9 +16,9 @@
 - **USB Formatting**
   - Automatically formats a USB stick to FAT32 with the correct partition and file system configuration required by the Xbox 360  
 
-- **BadUpdate Payload Installation**
-  - Installs the official free trial version of *Rock Band Blitz*, which is required to trigger the BadUpdate exploit  
-  - Automatically copies and configures the BadUpdate exploit payload files onto the USB drive  
+- **BadUpdate Exploit Variations**
+  - Installs the BadUpdate exploit via the method of your choosing  
+  - Automatically configures the exploit based on which method you select  
 
 - **Additional Homebrew Integration**
   - Installs XeXMenu 1.2, the popular Xbox 360 homebrew dashboard and file manager  
