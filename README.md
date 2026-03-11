@@ -5,13 +5,13 @@
 ### What Is BadStick?
 - BadStick is an AIO (All-in-one) tool, meaning you get everything you need packed into one tool that does all the work for you  
 - Designed for both beginners who don't know what they are doing and experienced users who want to save time
-- Saves time by combining USB formatting, exploit installation, plugin and homebrew setup into one easy application that does it all in minutes
+- Saves time by combining device formatting, exploit installation, plugin and homebrew setup into one easy application that does it all in minutes
 
 
 ### Key Features
 
 - **Device Formatting**
-  - Automatically formats a USB stick to FAT32 with the correct partition and file system configuration required by the Xbox 360  
+  - Automatically formats any Fat32 compatible to FAT32 with the correct partition and file system configuration required by the Xbox 360  
 - **BadUpdate Exploit Variations**
   - Installs the BadUpdate exploit via the method of your choosing  
   - Automatically configures the exploit based on which method you select  
