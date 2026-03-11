@@ -15,15 +15,12 @@
 
 - **USB Formatting**
   - Automatically formats a USB stick to FAT32 with the correct partition and file system configuration required by the Xbox 360  
-
 - **BadUpdate Exploit Variations**
   - Installs the BadUpdate exploit via the method of your choosing  
   - Automatically configures the exploit based on which method you select  
-
 - **Additional Homebrew Integration**
   - Installs XeXMenu 1.2, the popular Xbox 360 homebrew dashboard and file manager  
   - Allows users to select additional homebrew applications included in the tool to customize their USB setup  
-
 - **Open Source for Transparency and Learning**
   - Full source code is available so users and developers can learn from and understand how the tool works  
 
@@ -53,10 +50,4 @@ https://github.com/grimdoomer/Xbox360BadUpdate
 
 ## Other Information
 
-BadStick was created as a **free and open source project** to make it easier for users to run the BadUpdate exploit and to help others learn how the process works.
-
-With that said, **you do not have permission to reupload this project or integrate it into other programs without explicit permission**.
-
-I fully support people learning from the source code, but I do not support others redistributing or rebranding my work as their own.
-
-If you would like to use BadStick in another project, simply ask first — I’m usually happy to allow it.
+BadStick was created as a **free and open source project** to make it easier for users to run the BadUpdate exploit and to help others learn how the process works. With that said, **you do not have permission to reupload this project or integrate it into other programs without explicit permission**. I fully support people learning from the source code, but I do not support others redistributing or rebranding my work as their own. If you would like to use BadStick in another project, simply ask first — I’m usually happy to allow it.
