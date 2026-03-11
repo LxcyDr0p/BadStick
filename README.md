@@ -1,52 +1,36 @@
-# BadStick — The Xbox 360 BadUpdate Device Setup Tool
-
 ![BadStick V1.5-Stable](https://i.imgur.com/3qz14fn.png)
 
-## Purpose & Overview
+# BadStick — The Xbox 360 BadUpdate Device Setup Tool
 
-- A user-friendly, all-in-one USB setup tool for the Xbox 360 BadUpdate soft mod exploit  
-- Designed to format and prepare any FAT32-compatible USB stick specifically for the BadUpdate exploit  
-- Simplifies the complex process of preparing a USB drive for the BadUpdate exploit  
-- Completely open source  
+### What Is BadStick?
+- BadStick is an AIO (All-in-one) tool, meaning you get everything you need packed into one tool that does all the work for you  
+- Designed for both beginners who don't know what they are doing and experienced users who want to save time
+- Saves time by combining USB formatting, exploit installation, plugin and homebrew setup into one easy application that does it all in minutes
 
----
 
-## Key Features
+### Key Features
 
-- **USB Formatting**
+- **Device Formatting**
   - Automatically formats a USB stick to FAT32 with the correct partition and file system configuration required by the Xbox 360  
 - **BadUpdate Exploit Variations**
   - Installs the BadUpdate exploit via the method of your choosing  
   - Automatically configures the exploit based on which method you select  
-- **Additional Homebrew Integration**
-  - Installs XeXMenu 1.2, the popular Xbox 360 homebrew dashboard and file manager  
-  - Allows users to select additional homebrew applications included in the tool to customize their USB setup  
-- **Open Source for Transparency and Learning**
-  - Full source code is available so users and developers can learn from and understand how the tool works  
+- **Package Installer**
+  - Allows users to select additional homebrew applications and/or included in the tool alongside the exploit
+- **Configuration File Editing**
+  - Modify your JRPC, XBDM or Dashlaunch configs easily with the built in config editor 
 
 ---
 
-## About the BadUpdate Exploit
-
-- A **soft mod** for Xbox 360 consoles that uses the *Rock Band Blitz* game update mechanism  
+### About the BadUpdate Exploit
 - Exploits a vulnerability in the game update process to load unsigned code and homebrew  
 - Requires **no hardware modification or flashing**, making it a purely software-based exploit  
-- After rebooting, the console returns to its normal state and the exploit must be launched again to regain homebrew functionality  
-- Considered lower risk compared to hardware modifications  
-- Enables users to run unsigned code, custom dashboards, and various homebrew applications  
+- Little to no risk by user when compared to hardmodding a system 
+- Enables users to run unsigned code, custom dashboards, and various homebrew applications (**in a _semi-tethered_ state**)  
 
 BadUpdate GitHub Page:  
 https://github.com/grimdoomer/Xbox360BadUpdate
 
----
-
-## Why Use BadStick?
-
-- Removes the guesswork and manual steps required to prepare a USB drive for the BadUpdate exploit  
-- Designed for both beginners and experienced Xbox 360 modders  
-- Saves time by combining USB formatting, exploit installation, and homebrew setup into one easy application  
-
----
 
 ## Other Information
 
