@@ -1,7 +1,5 @@
-![BadStick V1.5-Stable](https://i.imgur.com/3qz14fn.png)
-
 # BadStick — The Xbox 360 BadUpdate Device Setup Tool
-
+![BadStick V1.5-Stable](https://i.imgur.com/3qz14fn.png)
 ### What Is BadStick?
 - BadStick is an AIO (All-in-one) tool, meaning you get everything you need packed into one tool that does all the work for you  
 - Designed for both beginners who don't know what they are doing and experienced users who want to save time
