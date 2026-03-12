@@ -930,11 +930,11 @@ namespace Xbox_360_BadUpdate_USB_Tool
             }
         }
 
-        private void deleteselfBtn_Click(object sender, EventArgs e)
+         private void deleteselfBtn_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(
-                "Are You Sure You Want To Delete This Program?",
-                "Confirm Self Delete",
+                "Are You Sure You Want To Annihilate BadStick?",
+                "\"BadStick kys bro\"",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning) == DialogResult.Yes)
             {
@@ -953,3 +953,4 @@ namespace Xbox_360_BadUpdate_USB_Tool
         }
     }
 }
+
