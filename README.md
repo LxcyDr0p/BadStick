@@ -14,7 +14,7 @@
 ### Key Features
 
 - **Device Formatting**
-  - Automatically formats any Fat32 compatible to FAT32 with the correct partition and file system configuration required by the Xbox 360  
+  - Automatically formats any Fat32 compatible device to FAT32 with the correct partition and file system configuration required by the Xbox 360  
 - **BadUpdate Exploit Variations**
   - Installs the BadUpdate exploit via the method of your choosing  
   - Automatically configures the exploit based on which method you select  
