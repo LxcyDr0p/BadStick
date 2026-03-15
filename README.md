@@ -17,7 +17,7 @@
 - Requires **no hardware modification or flashing**, making it a purely software-based exploit  
 - Little to no risk by user when compared to hardmodding a system 
 - Enables users to run unsigned code, custom dashboards, and various homebrew applications
-- Exploit is known as "Semi-Tethered" meaning custom code execution is achieved without kernel patches being applied.
+- Exploit is known as "Semi-Untethered" meaning custom code execution is achieved without kernel patches being applied.
 - Anytime the powerstate is changed, the exploit must be ran again. E.g: rebooting/shuttingdown
 
 BadUpdate GitHub Page:  
