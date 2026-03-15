@@ -4,12 +4,13 @@
 - .Net Framework v4.8.1 [https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481](url)
 ### BadStick Legacy Windows 8.1/8/7 Requirements
 - .Net Framework v4.6.1 [https://dotnet.microsoft.com/en-us/download/dotnet-framework/net461](url)
-
+---
 ### What Is BadStick?
 - BadStick is an AIO (All-in-one) tool, meaning you get everything you need packed into one tool that does all the work for you  
 - Designed for both beginners who don't know what they are doing and experienced users who want to save time
 - Saves time by combining device formatting, exploit installation, plugin and homebrew setup into one easy application that does it all in minutes
 
+---
 
 ### Key Features
 
