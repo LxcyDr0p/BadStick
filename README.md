@@ -1,5 +1,5 @@
 # BadStick — The Xbox 360 BadUpdate Device Setup Tool
-![BadStick V2.0-Stable](https://i.imgur.com/3vL2KJX.png) ![BadStick V2.0-Stable](https://i.imgur.com/WCz4f6R.png)
+![BadStick V2.0-Stable](https://i.imgur.com/3vL2KJX.png)
 ### BadStick Windows 10+ Requirements
 - .Net Framework v4.8.1 [https://dotnet.microsoft.com/en-us/download/dotnet-framework/net481](url)
 ### BadStick Legacy Windows 8.1/8/7 Requirements
