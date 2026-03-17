@@ -1,6 +1,7 @@
 ﻿using FastColoredTextBoxNS;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net.Http;
 using System.Security.Principal;
@@ -11,8 +12,9 @@ namespace Xbox_360_BadUpdate_USB_Tool
 {
     public partial class Form1 : Form
     {
-        public static string currentver = "v2.0-Stable";
+        public static string currentver = "v2.1-Stable";
         public static bool devmode = false;
+        public static bool legacy = true;
         public static string ChkIntStatus;
         public static string ChkAdminStatus;
         public static string ChkComStatus;
@@ -77,7 +79,6 @@ namespace Xbox_360_BadUpdate_USB_Tool
             if (osVer.Major == 6 && osVer.Minor == 3) return "Windows 8.1";
             if (osVer.Major == 10 && osVer.Build < 22000) return "Windows 10";
             if (osVer.Major == 10 && osVer.Build >= 22000) return "Windows 11";
-
             return "Unknown Windows Version";
         }
         public async Task CheckForUpdatesAsync()
@@ -92,14 +93,20 @@ namespace Xbox_360_BadUpdate_USB_Tool
                     http.DefaultRequestHeaders.UserAgent.ParseAdd("BadStick-Updater/1.0");
                     string latestVersion = await http.GetStringAsync("https://pastebin.com/raw/SHpqTNY0");
                     latestVersion = latestVersion.Trim();
-                    if (latestVersion != currentver)
+                    if (latestVersion != currentver && !legacy == true)
                     {
                         startupProgressBar.Value = 100;
                         ContinueBtn.Enabled = true;
-                        noadminWarning.Visible = true;
+                        updateNotice.Visible = true;
                         ContinueBtn.Text = "Update";
-                        startupLabel.Text = "Update Available!";
-                        warningTip.SetToolTip(noadminWarning, "There is an update available for BadStick, please update to the latest version.");
+                        startupLabel.Text = "BadStick Update Available!";
+                        warningTip.SetToolTip(updateNotice, "There is an update available for BadStick, please update to the latest version.");
+                    }
+                    else
+                    {
+                        updateTip.SetToolTip(updateNotice, "An update for BadStick Legacy is available.");
+                        updateNotice.Visible = true;
+                        startupLabel.Text = "BadStick Lgeacy Update Available!";
                     }
                 }
             }
@@ -131,11 +138,6 @@ namespace Xbox_360_BadUpdate_USB_Tool
                     if (downloadUrl == null)
                         throw new Exception("No suitable asset found for this OS in latest release.");
                     startupLabel.Text = windowsName + " detected, installing compatible version...";
-                    MessageBox.Show(
-                        $"Detected {windowsName} — Downloading {tagName}",
-                        "Updater",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
                     string psScript = string.Format(@"
 try {{
     Write-Host '[BadStick] Downloading update...'
@@ -185,7 +187,9 @@ del %0
             MessageBox.Show("This is for everyone who worked tirelessly to develop and bring BadUpdate to the community. " +
                 "Thank you to everyone for your undying dedication and devotion to this community. " +
                 "\n\n\nBadStick Developers & Creators:\n" +
-                "- Shelby\n- Lxcy_Dr0p\n\n\nBadUpdate Exploit Credits:\n" +
+                "- Shelby\n- Lxcy_Dr0p\n\n" +
+                "BadStick Contributors\n- u/wonderingfloatilla - WMI Bug Work\n\n" +
+                "BadUpdate Exploit Credits:\n" +
                 "- Grimdoomer (Ryan Miceli)\n- InvoxiPlayGames (Emma)\n- kmx360 (Mate Kukri)\n\n\n" +
                 "Of course, thank you to all of the homebrew developers for bringing such " +
                 "programs and tools to the community. Your work has done so much over " +
@@ -194,32 +198,45 @@ del %0
                 "- MrMario2011\n" +
                 "- ModdedWarfare\n" +
                 "- Sharkys Customs / DavisOrNaw\n" +
-                "- Modern Vintage Gamer" +
+                "- Modern Vintage Gamer\n" +
                 "- Element18592", "Credits Where They Are Due <3", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            if (devmode == true) { devbypassBtn.Visible = true; devbypassBtn.Enabled = true; }
             ContinueBtn.Enabled = false;
             startupProgressBar.Value = 0;
             bool isAdmin = IsRanAsAdmin();
             bool hasInternet = await IsInternetAvailableAsync();
             try
             {
-                if (!hasInternet) { fatalError.Visible = true; warningTip.SetToolTip(fatalError, "No internet access detected, some features may be unavailable."); return; }
-                await CheckForUpdatesAsync();
-                if (ContinueBtn.Text == "Update") { return; }
+                if (!devmode) { await CheckForUpdatesAsync(); if (ContinueBtn.Text == "Update") { return; } }
+                if (!hasInternet) { fatalError.Visible = true; warningTip.SetToolTip(fatalError, "No internet access detected, please restart BadStick with a working internet connection."); return; }
                 await ComMSG();
-                if (!isAdmin) { noadminWarning.Visible = true; warningTip.SetToolTip(noadminWarning, "BadStick not run as administrator, formatting will be disabled."); }            
+                if (!isAdmin) { noadminWarning.Visible = true; warningTip.SetToolTip(noadminWarning, "BadStick not run as administrator, formatting will be disabled."); }
+                if (noadminWarning.Visible == true && legacy == true) { noadminWarning.Location = new Point(358, 90); }
             }
             catch (Exception ex)
             {
                 fatalError.Visible = true;
-                startupLabel.Text = "An error occurred during startup: " + ex.Message;
+                startupLabel.Text = "An error occurred during startup, please restart BadStick.";
             }
             startupProgressBar.Value = 100;
             startupLabel.Text = "Welcome to BadStick!";
             ContinueBtn.Enabled = true;
         }
-        private void devbypassBtn_Click(object sender, EventArgs e) { this.Hide(); Form2 Next = new Form2(); Next.Show(); }}
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (File.Exists("./updater.bat") == true) { File.Delete("./updater.bat"); }
+            if (File.Exists("./updater.txt") == true) { File.Delete("./updater.txt"); }
+        }
+        private void githubpicLink_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/LxcyDr0p/BadStick");
+        }
+
+        private void discordLink_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://discord.gg/HzUP3shMgQ");
+        }
+    }
 }

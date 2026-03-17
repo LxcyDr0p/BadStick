@@ -70,8 +70,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.editorBtn = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.abadmemunitToggle = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.abadmemunitToggle = new System.Windows.Forms.CheckBox();
             this.badavatarhddToggle = new System.Windows.Forms.CheckBox();
             this.badupdateToggle = new System.Windows.Forms.CheckBox();
             this.badavatarToggle = new System.Windows.Forms.CheckBox();
@@ -117,6 +117,7 @@
             this.deleteselfBtn = new System.Windows.Forms.Button();
             this.wipetempBtn = new System.Windows.Forms.Button();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.discordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -196,6 +197,7 @@
             this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.redditToolStripMenuItem,
+            this.discordToolStripMenuItem,
             this.githubpageBtn});
             this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
             this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -209,7 +211,7 @@
             this.badstickredditBtn,
             this.reddit360Btn});
             this.redditToolStripMenuItem.Name = "redditToolStripMenuItem";
-            this.redditToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.redditToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.redditToolStripMenuItem.Text = "Reddit";
             // 
             // badstickredditBtn
@@ -229,7 +231,7 @@
             // githubpageBtn
             // 
             this.githubpageBtn.Name = "githubpageBtn";
-            this.githubpageBtn.Size = new System.Drawing.Size(112, 22);
+            this.githubpageBtn.Size = new System.Drawing.Size(180, 22);
             this.githubpageBtn.Text = "GitHub";
             this.githubpageBtn.Click += new System.EventHandler(this.githubpageBtn_Click_1);
             // 
@@ -574,7 +576,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.abadmemunitToggle);
             this.groupBox3.Controls.Add(this.xeunshackleToggle);
             this.groupBox3.Controls.Add(this.freemyxeToggle);
             this.groupBox3.Location = new System.Drawing.Point(527, 103);
@@ -584,21 +585,9 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Patches";
             // 
-            // abadmemunitToggle
-            // 
-            this.abadmemunitToggle.AutoSize = true;
-            this.abadmemunitToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.abadmemunitToggle.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.abadmemunitToggle.Location = new System.Drawing.Point(51, -14);
-            this.abadmemunitToggle.Name = "abadmemunitToggle";
-            this.abadmemunitToggle.Size = new System.Drawing.Size(99, 17);
-            this.abadmemunitToggle.TabIndex = 29;
-            this.abadmemunitToggle.Text = "ABadMemUnit";
-            this.abadmemunitToggle.UseVisualStyleBackColor = true;
-            this.abadmemunitToggle.CheckedChanged += new System.EventHandler(this.abadmemunitToggle_CheckedChanged);
-            // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.abadmemunitToggle);
             this.groupBox2.Controls.Add(this.badavatarhddToggle);
             this.groupBox2.Controls.Add(this.badupdateToggle);
             this.groupBox2.Controls.Add(this.badavatarToggle);
@@ -609,12 +598,25 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Exploit Method";
             // 
+            // abadmemunitToggle
+            // 
+            this.abadmemunitToggle.AutoSize = true;
+            this.abadmemunitToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.abadmemunitToggle.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.abadmemunitToggle.Location = new System.Drawing.Point(47, 69);
+            this.abadmemunitToggle.Name = "abadmemunitToggle";
+            this.abadmemunitToggle.Size = new System.Drawing.Size(99, 17);
+            this.abadmemunitToggle.TabIndex = 29;
+            this.abadmemunitToggle.Text = "ABadMemUnit";
+            this.abadmemunitToggle.UseVisualStyleBackColor = true;
+            this.abadmemunitToggle.CheckedChanged += new System.EventHandler(this.abadmemunitToggle_CheckedChanged);
+            // 
             // badavatarhddToggle
             // 
             this.badavatarhddToggle.AutoSize = true;
             this.badavatarhddToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.badavatarhddToggle.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.badavatarhddToggle.Location = new System.Drawing.Point(45, 61);
+            this.badavatarhddToggle.Location = new System.Drawing.Point(45, 52);
             this.badavatarhddToggle.Name = "badavatarhddToggle";
             this.badavatarhddToggle.Size = new System.Drawing.Size(101, 17);
             this.badavatarhddToggle.TabIndex = 28;
@@ -627,7 +629,7 @@
             this.badupdateToggle.AutoSize = true;
             this.badupdateToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.badupdateToggle.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.badupdateToggle.Location = new System.Drawing.Point(63, 26);
+            this.badupdateToggle.Location = new System.Drawing.Point(63, 18);
             this.badupdateToggle.Name = "badupdateToggle";
             this.badupdateToggle.Size = new System.Drawing.Size(83, 17);
             this.badupdateToggle.TabIndex = 27;
@@ -640,7 +642,7 @@
             this.badavatarToggle.AutoSize = true;
             this.badavatarToggle.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.badavatarToggle.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.badavatarToggle.Location = new System.Drawing.Point(69, 43);
+            this.badavatarToggle.Location = new System.Drawing.Point(69, 35);
             this.badavatarToggle.Name = "badavatarToggle";
             this.badavatarToggle.Size = new System.Drawing.Size(77, 17);
             this.badavatarToggle.TabIndex = 26;
@@ -1144,6 +1146,13 @@
             this.pictureBox5.TabIndex = 21;
             this.pictureBox5.TabStop = false;
             // 
+            // discordToolStripMenuItem
+            // 
+            this.discordToolStripMenuItem.Name = "discordToolStripMenuItem";
+            this.discordToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.discordToolStripMenuItem.Text = "Discord";
+            this.discordToolStripMenuItem.Click += new System.EventHandler(this.discordToolStripMenuItem_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1157,8 +1166,9 @@
             this.MaximizeBox = false;
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "BadStick 2.0";
+            this.Text = "BadStick 2.1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
+            this.Load += new System.EventHandler(this.Form2_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -1280,5 +1290,6 @@
         private System.Windows.Forms.CheckBox hvp2Toggle;
         private System.Windows.Forms.CheckBox fakeanimToggle;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem discordToolStripMenuItem;
     }
 }

@@ -41,14 +41,20 @@
             this.label4 = new System.Windows.Forms.Label();
             this.startupProgressBar = new System.Windows.Forms.ProgressBar();
             this.startupLabel = new System.Windows.Forms.Label();
+            this.warningTip = new System.Windows.Forms.ToolTip(this.components);
+            this.errorTip = new System.Windows.Forms.ToolTip(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this.updateNotice = new System.Windows.Forms.PictureBox();
+            this.discordLink = new System.Windows.Forms.PictureBox();
+            this.githubpicLink = new System.Windows.Forms.PictureBox();
             this.fatalError = new System.Windows.Forms.PictureBox();
             this.noadminWarning = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.warningTip = new System.Windows.Forms.ToolTip(this.components);
-            this.errorTip = new System.Windows.Forms.ToolTip(this.components);
-            this.devbypassBtn = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
+            this.updateTip = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.updateNotice)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.discordLink)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.githubpicLink)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fatalError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.noadminWarning)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -105,23 +111,23 @@
             this.VerLabel.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.VerLabel.Name = "VerLabel";
             this.VerLabel.Size = new System.Drawing.Size(114, 17);
-            this.VerLabel.Text = "BadStick V2.0-Stable ";
+            this.VerLabel.Text = "BadStick V2.1-Stable ";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 6.5F);
-            this.label3.Location = new System.Drawing.Point(265, 223);
+            this.label3.Location = new System.Drawing.Point(300, 224);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(174, 12);
+            this.label3.Size = new System.Drawing.Size(142, 12);
             this.label3.TabIndex = 9;
-            this.label3.Text = "Brought To You by Project Revive Software\'s";
+            this.label3.Text = "Brought To You by The Xenon Forge";
             // 
             // creditsLabel
             // 
             this.creditsLabel.AutoSize = true;
             this.creditsLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.creditsLabel.Location = new System.Drawing.Point(2, 206);
+            this.creditsLabel.Location = new System.Drawing.Point(0, 169);
             this.creditsLabel.Name = "creditsLabel";
             this.creditsLabel.Size = new System.Drawing.Size(43, 13);
             this.creditsLabel.TabIndex = 10;
@@ -137,9 +143,9 @@
             this.label2.ForeColor = System.Drawing.Color.Black;
             this.label2.Location = new System.Drawing.Point(222, 38);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(27, 15);
+            this.label2.Size = new System.Drawing.Size(25, 15);
             this.label2.TabIndex = 11;
-            this.label2.Text = "v2.0";
+            this.label2.Text = "v2.1";
             // 
             // label4
             // 
@@ -156,20 +162,68 @@
             // 
             // startupProgressBar
             // 
-            this.startupProgressBar.Location = new System.Drawing.Point(108, 128);
+            this.startupProgressBar.Location = new System.Drawing.Point(129, 128);
             this.startupProgressBar.Name = "startupProgressBar";
-            this.startupProgressBar.Size = new System.Drawing.Size(331, 23);
+            this.startupProgressBar.Size = new System.Drawing.Size(310, 23);
             this.startupProgressBar.TabIndex = 13;
             // 
             // startupLabel
             // 
             this.startupLabel.AutoSize = true;
             this.startupLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.startupLabel.Location = new System.Drawing.Point(108, 109);
+            this.startupLabel.Location = new System.Drawing.Point(127, 112);
             this.startupLabel.Name = "startupLabel";
             this.startupLabel.Size = new System.Drawing.Size(94, 13);
             this.startupLabel.TabIndex = 14;
             this.startupLabel.Text = "Status: DEV_STAT";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Segoe UI Light", 7F);
+            this.label5.ForeColor = System.Drawing.Color.Black;
+            this.label5.Location = new System.Drawing.Point(332, 2);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(111, 12);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "Developed By Lxcy_Dr0p";
+            // 
+            // updateNotice
+            // 
+            this.updateNotice.BackColor = System.Drawing.Color.Transparent;
+            this.updateNotice.Image = global::Xbox_360_BadStick.Properties.Resources.Check;
+            this.updateNotice.Location = new System.Drawing.Point(405, 90);
+            this.updateNotice.Name = "updateNotice";
+            this.updateNotice.Size = new System.Drawing.Size(41, 32);
+            this.updateNotice.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.updateNotice.TabIndex = 21;
+            this.updateNotice.TabStop = false;
+            this.updateNotice.Visible = false;
+            // 
+            // discordLink
+            // 
+            this.discordLink.BackColor = System.Drawing.Color.Transparent;
+            this.discordLink.Image = global::Xbox_360_BadStick.Properties.Resources.discord;
+            this.discordLink.Location = new System.Drawing.Point(43, 185);
+            this.discordLink.Name = "discordLink";
+            this.discordLink.Size = new System.Drawing.Size(41, 32);
+            this.discordLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.discordLink.TabIndex = 20;
+            this.discordLink.TabStop = false;
+            this.discordLink.Click += new System.EventHandler(this.discordLink_Click);
+            // 
+            // githubpicLink
+            // 
+            this.githubpicLink.BackColor = System.Drawing.Color.Transparent;
+            this.githubpicLink.Image = global::Xbox_360_BadStick.Properties.Resources.github;
+            this.githubpicLink.Location = new System.Drawing.Point(0, 185);
+            this.githubpicLink.Name = "githubpicLink";
+            this.githubpicLink.Size = new System.Drawing.Size(41, 32);
+            this.githubpicLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.githubpicLink.TabIndex = 19;
+            this.githubpicLink.TabStop = false;
+            this.githubpicLink.Click += new System.EventHandler(this.githubpicLink_Click);
             // 
             // fatalError
             // 
@@ -206,38 +260,15 @@
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
-            // devbypassBtn
-            // 
-            this.devbypassBtn.Enabled = false;
-            this.devbypassBtn.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.devbypassBtn.Location = new System.Drawing.Point(151, 191);
-            this.devbypassBtn.Name = "devbypassBtn";
-            this.devbypassBtn.Size = new System.Drawing.Size(92, 25);
-            this.devbypassBtn.TabIndex = 17;
-            this.devbypassBtn.Text = "Dev Bypass";
-            this.devbypassBtn.UseVisualStyleBackColor = true;
-            this.devbypassBtn.Visible = false;
-            this.devbypassBtn.Click += new System.EventHandler(this.devbypassBtn_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Font = new System.Drawing.Font("Segoe UI Light", 7F);
-            this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(328, 2);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(111, 12);
-            this.label5.TabIndex = 18;
-            this.label5.Text = "Developed By Lxcy_Dr0p";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(446, 241);
+            this.Controls.Add(this.updateNotice);
+            this.Controls.Add(this.discordLink);
+            this.Controls.Add(this.githubpicLink);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.devbypassBtn);
             this.Controls.Add(this.fatalError);
             this.Controls.Add(this.noadminWarning);
             this.Controls.Add(this.startupLabel);
@@ -258,9 +289,13 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "BadStick";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.updateNotice)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.discordLink)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.githubpicLink)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fatalError)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.noadminWarning)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -287,8 +322,11 @@
         private System.Windows.Forms.PictureBox fatalError;
         private System.Windows.Forms.ToolTip warningTip;
         private System.Windows.Forms.ToolTip errorTip;
-        private System.Windows.Forms.Button devbypassBtn;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.PictureBox githubpicLink;
+        private System.Windows.Forms.PictureBox discordLink;
+        private System.Windows.Forms.PictureBox updateNotice;
+        private System.Windows.Forms.ToolTip updateTip;
     }
 }
 

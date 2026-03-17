@@ -8,11 +8,13 @@ using System.Linq;
 using System.Management;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Xbox_360_BadStick;
+using Xbox_360_BadStick.Properties;
 
 namespace Xbox_360_BadUpdate_USB_Tool
 {
@@ -20,6 +22,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
     {
         private readonly HttpClient _httpClient = new HttpClient();
         public bool DriveSet = true;
+        public bool IsAdmin = false;
         public string DevicePath = "";
         private int _totalSteps;
         private int _currentStep;
@@ -74,7 +77,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
         private bool IsRunAsAdmin() { using (var identity = WindowsIdentity.GetCurrent()) { var principal = new WindowsPrincipal(identity); return principal.IsInRole(WindowsBuiltInRole.Administrator); }}
         private void ExitBtn_Click(object sender, EventArgs e) { Application.Exit(); }
         private void Form2_FormClosing(object sender, FormClosingEventArgs e) { Application.Exit(); }
-        public Form2() { InitializeComponent(); InitializeCheckBoxDict(); LoadUsbDrives(); if (!IsRunAsAdmin()) { skipformatToggle.Enabled = false; skipformatToggle.Checked = true; } if (File.Exists("./updater.bat")) File.Delete("./updater.bat"); }
+        public Form2() { InitializeComponent(); InitializeCheckBoxDict(); LoadUsbDrives(); if (!IsRunAsAdmin()) if (File.Exists("./updater.bat")) File.Delete("./updater.bat");}
         private class UsbDriveItem
         {
             public string RootPath { get; }
@@ -135,7 +138,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
 
             for (int i = 3; i >= 1; i--)
             {
-                UpdateStatus($"Status: Exiting in {i}...");
+                UpdateStatus($"Status: Exiting In {i}...");
                 await Task.Delay(1000);
             }
             Application.Exit();
@@ -149,10 +152,8 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 using (var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                 {
                     response.EnsureSuccessStatusCode();
-
                     var total = response.Content.Headers.ContentLength ?? -1L;
                     var canReportProgress = total != -1 && progress != null;
-
                     using (var contentStream = await response.Content.ReadAsStreamAsync())
                     using (var fileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
                     {
@@ -305,31 +306,73 @@ namespace Xbox_360_BadUpdate_USB_Tool
             try
             {
                 string driveLetter = Path.GetPathRoot(drivePath).TrimEnd('\\');
-
                 string query = $"SELECT * FROM Win32_Volume WHERE DriveLetter = '{driveLetter}'";
-
                 using (var searcher = new ManagementObjectSearcher(query))
                 {
                     var volumes = searcher.Get();
-
                     foreach (ManagementObject volume in volumes)
                     {
+                        ulong capacity = (ulong)(volume["Capacity"] ?? 0UL);
+                        const ulong F32L = 34359738368;
+                        if (capacity >= F32L)
+                        {
+                            var result = MessageBox.Show(
+                                "The selected drive is larger than 32GB and cannot be formatted to FAT32. Do you want to continue without formatting?",
+                                "Drive Too Large",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning
+                            );
+                            if (result == DialogResult.Yes)
+                            {
+                                UpdateStatus("Status: Continuing Install...");
+                                return true;
+                            }
+                            else
+                            {
+                                UpdateStatus("Status: Install Cancelled By User");
+                                return false;
+                            }
+                        }
                         var inParams = volume.GetMethodParameters("Format");
                         inParams["FileSystem"] = "FAT32";
                         inParams["QuickFormat"] = true;
-
                         ManagementBaseObject outParams = volume.InvokeMethod("Format", inParams, null);
-
                         uint returnValue = (uint)(outParams.Properties["ReturnValue"].Value);
-
-                        if (returnValue == 0) { return true; }
-                        else { MessageBox.Show($"Failed to format drive. WMI Format returned error code: {returnValue}", "Format Error", MessageBoxButtons.OK, MessageBoxIcon.Error); Debug.WriteLine($"Format failed with error code: {returnValue}"); return false; }
+                        if (returnValue == 0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            MessageBox.Show(
+                                $"Format Failed w/ an Error Code: {returnValue}",
+                                "BadStick Format Exception",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error
+                            );
+                            return false;
+                        }
                     }
                 }
-                MessageBox.Show("Drive not found or inaccessible for formatting.", "BadStick Format Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "An Unexpected Error Has Occured.",
+                    "BadStick Format Exception",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+
                 return false;
             }
-            catch (Exception ex) { MessageBox.Show($"Error formatting drive: {ex.Message}", "BadStick Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error); return false;  }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error Formatting Drive: {ex.Message}",
+                    "BadStick Format Exception",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
         }
         private async void StartBtn_Click(object sender, EventArgs e)
         {
@@ -348,18 +391,17 @@ namespace Xbox_360_BadUpdate_USB_Tool
                     "Confirm Format",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
-                if (confirm != DialogResult.Yes) { UpdateStatus("Status: Format cancelled"); return; }
-                UpdateStatus("Status: Formatting device...");
+                if (confirm != DialogResult.Yes) { UpdateStatus("Status: Format Cancelled"); return; }
+                UpdateStatus("Status: Formatting Device...");
                 ProgressBar.Value = 0;
                 bool formatSuccess = await Task.Run(() => FormatDriveToFat32(usbPath));
-                if (!formatSuccess) { MessageBox.Show("Failed to format the device.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); UpdateStatus("Format failed."); return; }
-                UpdateStatus("Status: Format completed. Starting downloads...");
+                UpdateStatus("Status: Format Completed. Starting Downloads...");
             }
-            else { UpdateStatus("Status: Skipping format (per user request)..."); }
+            else { UpdateStatus("Status: Skipping Format (per user request)..."); }
             var packagesToDownload = GetSelectedPackages();
             if (skipmainfilesToggle.Checked)
             {
-                string[] mainFiles = { "RBB.zip", "Payload-XeUnshackle.zip", "Payload-FreeMyXe.zip", "XeXMenu.zip" };
+                string[] mainFiles = { "RBB.zip", "Payload-XeUnshackle.zip", "Payload-FreeMyXe.zip" };
                 packagesToDownload = packagesToDownload
                     .Where(pkg => !mainFiles.Contains(pkg.FileName, StringComparer.OrdinalIgnoreCase))
                     .ToList();
@@ -398,7 +440,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 if (File.Exists(tempFilePath))
                 {
                     using (var archive = ZipFile.OpenRead(tempFilePath))
-                    {
+                    { 
                         _totalSteps += archive.Entries.Count;
                     }
                 }
@@ -453,8 +495,6 @@ namespace Xbox_360_BadUpdate_USB_Tool
             abadmemunitToggle.Enabled = !checkAll;
             xeunshackleToggle.Enabled = !checkAll;
             freemyxeToggle.Enabled = !checkAll;
-
-            // Skip options follow SelectAll
             skipxexmenuToggle.Enabled = !checkAll;
             skiprbbToggle.Enabled = !checkAll;
         }
@@ -649,6 +689,19 @@ namespace Xbox_360_BadUpdate_USB_Tool
                 Process.Start(new ProcessStartInfo() { FileName = "cmd.exe", Arguments = $"/C timeout 2 > nul & del \"{exePath}\"", CreateNoWindow = true, UseShellExecute = false });
                 Application.Exit();
             }
+        }
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            IsAdmin = IsRunAsAdmin();
+            if (!IsAdmin)
+            {
+                skipformatToggle.Checked = true;
+                skipformatToggle.Enabled = false;
+            }
+        }
+        private void discordToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://discord.com/invite/HzUP3shMgQ");
         }
     }
 }
