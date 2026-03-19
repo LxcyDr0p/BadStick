@@ -240,7 +240,6 @@
             // noadminWarning
             // 
             this.noadminWarning.BackColor = System.Drawing.Color.Transparent;
-            this.noadminWarning.Image = global::Xbox_360_BadStick.Properties.Resources.Security_And_Maintenance_Alert_Windows_10_version_21H2;
             this.noadminWarning.Location = new System.Drawing.Point(405, 90);
             this.noadminWarning.Name = "noadminWarning";
             this.noadminWarning.Size = new System.Drawing.Size(41, 32);

@@ -135,8 +135,6 @@
     <None Include="Resources\discord.png" />
     <None Include="Resources\github.png" />
     <None Include="Resources\red-x-on-network-icon.png" />
-    <None Include="Resources\Security_And_Maintenance_Alert_Windows_10_version_21H21.png" />
-    <None Include="Resources\Security_And_Maintenance_Alert_Windows_10_version_21H2.png" />
     <None Include="Resources\xbox-360-logo-png-transparent.png" />
     <None Include="Resources\BadStick Tilted.png" />
     <None Include="Resources\bugif.gif" />
