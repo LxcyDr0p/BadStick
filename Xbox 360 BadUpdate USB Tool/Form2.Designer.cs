@@ -66,6 +66,7 @@
             this.xeunshackleToggle = new System.Windows.Forms.CheckBox();
             this.freemyxeToggle = new System.Windows.Forms.CheckBox();
             this.RefDrivesBtn = new System.Windows.Forms.Button();
+            this.BrowseFolderBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.editorBtn = new System.Windows.Forms.Button();
@@ -162,7 +163,7 @@
             this.StartBtn.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.StartBtn.Location = new System.Drawing.Point(6, 355);
             this.StartBtn.Name = "StartBtn";
-            this.StartBtn.Size = new System.Drawing.Size(169, 24);
+            this.StartBtn.Size = new System.Drawing.Size(160, 24);
             this.StartBtn.TabIndex = 4;
             this.StartBtn.Text = "Start";
             this.StartBtn.UseVisualStyleBackColor = true;
@@ -238,9 +239,9 @@
             // ExitBtn
             // 
             this.ExitBtn.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ExitBtn.Location = new System.Drawing.Point(356, 355);
+            this.ExitBtn.Location = new System.Drawing.Point(445, 355);
             this.ExitBtn.Name = "ExitBtn";
-            this.ExitBtn.Size = new System.Drawing.Size(165, 24);
+            this.ExitBtn.Size = new System.Drawing.Size(76, 24);
             this.ExitBtn.TabIndex = 8;
             this.ExitBtn.Text = "Exit";
             this.ExitBtn.UseVisualStyleBackColor = true;
@@ -521,11 +522,22 @@
             this.RefDrivesBtn.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.RefDrivesBtn.Location = new System.Drawing.Point(181, 355);
             this.RefDrivesBtn.Name = "RefDrivesBtn";
-            this.RefDrivesBtn.Size = new System.Drawing.Size(169, 24);
+            this.RefDrivesBtn.Size = new System.Drawing.Size(130, 24);
             this.RefDrivesBtn.TabIndex = 18;
             this.RefDrivesBtn.Text = "Reset Drives";
             this.RefDrivesBtn.UseVisualStyleBackColor = true;
             this.RefDrivesBtn.Click += new System.EventHandler(this.RefDrivesBtn_Click);
+            // 
+            // BrowseFolderBtn
+            // 
+            this.BrowseFolderBtn.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.BrowseFolderBtn.Location = new System.Drawing.Point(317, 355);
+            this.BrowseFolderBtn.Name = "BrowseFolderBtn";
+            this.BrowseFolderBtn.Size = new System.Drawing.Size(122, 24);
+            this.BrowseFolderBtn.TabIndex = 19;
+            this.BrowseFolderBtn.Text = "Browse Folder";
+            this.BrowseFolderBtn.UseVisualStyleBackColor = true;
+            this.BrowseFolderBtn.Click += new System.EventHandler(this.BrowseFolderBtn_Click);
             // 
             // tabControl1
             // 
@@ -551,6 +563,7 @@
             this.tabPage1.Controls.Add(this.BadStickIcon);
             this.tabPage1.Controls.Add(this.DeviceList);
             this.tabPage1.Controls.Add(this.groupBox4);
+            this.tabPage1.Controls.Add(this.BrowseFolderBtn);
             this.tabPage1.Controls.Add(this.RefDrivesBtn);
             this.tabPage1.Controls.Add(this.StartBtn);
             this.tabPage1.Controls.Add(this.ExitBtn);
@@ -655,11 +668,11 @@
             this.warningLabel.AutoSize = true;
             this.warningLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.warningLabel.ForeColor = System.Drawing.Color.Red;
-            this.warningLabel.Location = new System.Drawing.Point(337, 311);
+            this.warningLabel.Location = new System.Drawing.Point(181, 311);
             this.warningLabel.Name = "warningLabel";
-            this.warningLabel.Size = new System.Drawing.Size(188, 13);
+            this.warningLabel.Size = new System.Drawing.Size(335, 13);
             this.warningLabel.TabIndex = 22;
-            this.warningLabel.Text = "Warning: No Fat32 Media Detected";
+            this.warningLabel.Text = "Warning: No FAT32 USB or mounted media detected. Use Browse Folder to select a target.";
             // 
             // BadStickIcon
             // 
@@ -1227,6 +1240,7 @@
         private System.Windows.Forms.CheckBox PluginsToggle;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button RefDrivesBtn;
+        private System.Windows.Forms.Button BrowseFolderBtn;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;

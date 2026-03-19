@@ -1,0 +1,39 @@
+name: Build Windows Executable
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore "Xbox 360 BadUpdate USB Tool.sln"
+
+      - name: Build Release executable
+        run: msbuild "Xbox 360 BadUpdate USB Tool.sln" /m /p:Configuration=Release /p:Platform="Any CPU"
+
+      - name: Upload Release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BadStick-windows-release
+          path: Xbox 360 BadUpdate USB Tool/bin/Release/
+          if-no-files-found: error

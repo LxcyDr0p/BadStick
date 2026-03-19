@@ -21,6 +21,22 @@ namespace Xbox_360_BadUpdate_USB_Tool
     public partial class Form2 : Form
     {
         private readonly HttpClient _httpClient = new HttpClient();
+        private UsbDriveItem _manualUsbDrive;
+        private static readonly string[] CrossOverMountRoots =
+        {
+            @"Z:\Volumes",
+            @"Z:\media",
+            @"Z:\mnt"
+        };
+        private static readonly string[] ExcludedMountedVolumeNames =
+        {
+            "Macintosh HD",
+            "Macintosh HD - Data",
+            "Preboot",
+            "Recovery",
+            "Update",
+            "VM"
+        };
         public bool DriveSet = true;
         public bool IsAdmin = false;
         public string DevicePath = "";
@@ -77,43 +93,158 @@ namespace Xbox_360_BadUpdate_USB_Tool
         private bool IsRunAsAdmin() { using (var identity = WindowsIdentity.GetCurrent()) { var principal = new WindowsPrincipal(identity); return principal.IsInRole(WindowsBuiltInRole.Administrator); }}
         private void ExitBtn_Click(object sender, EventArgs e) { Application.Exit(); }
         private void Form2_FormClosing(object sender, FormClosingEventArgs e) { Application.Exit(); }
-        public Form2() { InitializeComponent(); InitializeCheckBoxDict(); LoadUsbDrives(); if (!IsRunAsAdmin()) if (File.Exists("./updater.bat")) File.Delete("./updater.bat");}
+        public Form2()
+        {
+            InitializeComponent();
+            _httpClient.Timeout = TimeSpan.FromMinutes(10);
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; BadStickTool/1.0)");
+            InitializeCheckBoxDict();
+            LoadUsbDrives();
+            if (!IsRunAsAdmin() && File.Exists("./updater.bat"))
+            {
+                File.Delete("./updater.bat");
+            }
+        }
         private class UsbDriveItem
         {
             public string RootPath { get; }
             public string DisplayName { get; }
-            public UsbDriveItem(string rootPath, string volumeLabel)
+            public bool CanFormat { get; }
+            public bool IsManualSelection { get; }
+            public UsbDriveItem(string rootPath, string volumeLabel, bool canFormat = true, bool isManualSelection = false)
             {
                 RootPath = rootPath;
-                DisplayName = string.IsNullOrEmpty(volumeLabel) ? rootPath : $"{rootPath} ({volumeLabel})";
+                CanFormat = canFormat;
+                IsManualSelection = isManualSelection;
+                string baseDisplayName = string.IsNullOrEmpty(volumeLabel) ? rootPath : $"{rootPath} ({volumeLabel})";
+                DisplayName = isManualSelection ? $"Manual: {baseDisplayName}" : baseDisplayName;
             }
             public override string ToString() { return DisplayName; }
         }
-        private void LoadUsbDrives()
+        private bool PathsEqual(string left, string right)
         {
-            DeviceList.DroppedDown = false;
-            DeviceList.BeginUpdate();
-            DeviceList.Items.Clear();
-
-            var drives = DriveInfo.GetDrives()
+            string normalizedLeft = NormalizeRootPath(left);
+            string normalizedRight = NormalizeRootPath(right);
+            return string.Equals(normalizedLeft, normalizedRight, StringComparison.OrdinalIgnoreCase);
+        }
+        private string NormalizeRootPath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return string.Empty;
+            }
+            return path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
+        private IEnumerable<UsbDriveItem> GetWindowsUsbDrives()
+        {
+            return DriveInfo.GetDrives()
                 .Where(d => (d.DriveType == DriveType.Removable || d.DriveType == DriveType.Fixed) && d.IsReady &&
                             string.Equals(d.DriveFormat, "FAT32", StringComparison.OrdinalIgnoreCase))
                 .Select(d => new UsbDriveItem(
                     d.RootDirectory.FullName,
-                    string.IsNullOrEmpty(d.VolumeLabel) ? "No Label" : d.VolumeLabel))
-                .ToList();
+                    string.IsNullOrEmpty(d.VolumeLabel) ? "No Label" : d.VolumeLabel));
+        }
+        private IEnumerable<UsbDriveItem> GetCrossOverMountedDrives()
+        {
+            foreach (string mountRoot in CrossOverMountRoots)
+            {
+                if (!Directory.Exists(mountRoot))
+                {
+                    continue;
+                }
+                string[] mountedDirectories;
+                try
+                {
+                    mountedDirectories = Directory.GetDirectories(mountRoot);
+                }
+                catch
+                {
+                    continue;
+                }
+                foreach (string mountedDirectory in mountedDirectories)
+                {
+                    string volumeName = Path.GetFileName(mountedDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+                    if (string.IsNullOrWhiteSpace(volumeName) || volumeName.StartsWith(".", StringComparison.Ordinal) ||
+                        ExcludedMountedVolumeNames.Contains(volumeName, StringComparer.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    yield return new UsbDriveItem(mountedDirectory, $"Mounted Volume: {volumeName}", canFormat: false);
+                }
+            }
+        }
+        private List<UsbDriveItem> GetAvailableUsbTargets()
+        {
+            var targets = new List<UsbDriveItem>();
+            targets.AddRange(GetWindowsUsbDrives());
+            if (targets.Count == 0)
+            {
+                foreach (var mountedDrive in GetCrossOverMountedDrives())
+                {
+                    if (!targets.Any(existing => PathsEqual(existing.RootPath, mountedDrive.RootPath)))
+                    {
+                        targets.Add(mountedDrive);
+                    }
+                }
+            }
+            return targets;
+        }
+        private void UpdateFormatSelectionState(UsbDriveItem selectedDrive)
+        {
+            if (!IsAdmin)
+            {
+                skipformatToggle.Checked = true;
+                skipformatToggle.Enabled = false;
+                return;
+            }
+            if (selectedDrive == null)
+            {
+                skipformatToggle.Enabled = true;
+                return;
+            }
+            if (!selectedDrive.CanFormat)
+            {
+                skipformatToggle.Checked = true;
+                skipformatToggle.Enabled = false;
+                string selectionSource = selectedDrive.IsManualSelection ? "Manual folder" : "Mounted volume";
+                UpdateStatus($"Status: {selectionSource} selected. Format is unavailable; files will be copied only.");
+                return;
+            }
+            skipformatToggle.Enabled = true;
+        }
+        private void LoadUsbDrives()
+        {
+            string currentSelectionPath = (DeviceList.SelectedItem as UsbDriveItem)?.RootPath;
+            bool hasManualSelection = _manualUsbDrive != null && Directory.Exists(_manualUsbDrive.RootPath);
+            if (!hasManualSelection)
+            {
+                _manualUsbDrive = null;
+            }
+            DeviceList.DroppedDown = false;
+            DeviceList.BeginUpdate();
+            DeviceList.Items.Clear();
+
+            var drives = GetAvailableUsbTargets();
 
             foreach (var drive in drives)
                 DeviceList.Items.Add(drive);
 
+            if (hasManualSelection && !drives.Any(drive => PathsEqual(drive.RootPath, _manualUsbDrive.RootPath)))
+            {
+                DeviceList.Items.Add(_manualUsbDrive);
+                drives.Add(_manualUsbDrive);
+            }
+
             if (DeviceList.Items.Count > 0)
             {
-                DeviceList.SelectedIndex = 0;
-                var firstDrive = DeviceList.Items[0] as UsbDriveItem;
-                if (firstDrive != null)
+                UsbDriveItem driveToSelect = drives.FirstOrDefault(drive => PathsEqual(drive.RootPath, currentSelectionPath))
+                    ?? drives.FirstOrDefault();
+                if (driveToSelect != null)
                 {
-                    DevicePath = firstDrive.RootPath;
+                    DeviceList.SelectedItem = driveToSelect;
+                    DevicePath = driveToSelect.RootPath;
                     DriveSet = true;
+                    UpdateFormatSelectionState(driveToSelect);
                 }
                 warningLabel.Visible = false;
             }
@@ -121,7 +252,8 @@ namespace Xbox_360_BadUpdate_USB_Tool
             {
                 DevicePath = null;
                 DriveSet = false;
-                warningLabel.Text = "Warning: No Fat32 Device Detected";
+                UpdateFormatSelectionState(null);
+                warningLabel.Text = "Warning: No FAT32 USB or mounted media detected. Use Browse Folder to select a target.";
                 warningLabel.Visible = true;
             }
 
@@ -145,30 +277,79 @@ namespace Xbox_360_BadUpdate_USB_Tool
         }
         public async Task DownloadFileAsync(string url, string destinationFilePath, IProgress<int> progress = null)
         {
-            using (var client = new HttpClient())
+            const int maxAttempts = 3;
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
-                client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; BadStickTool/1.0)");
-
-                using (var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                try
                 {
-                    response.EnsureSuccessStatusCode();
-                    var total = response.Content.Headers.ContentLength ?? -1L;
-                    var canReportProgress = total != -1 && progress != null;
-                    using (var contentStream = await response.Content.ReadAsStreamAsync())
-                    using (var fileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                    using (var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                     {
-                        var totalRead = 0L;
-                        var buffer = new byte[8192];
-                        int read;
-                        while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        if (!response.IsSuccessStatusCode)
                         {
-                            await fileStream.WriteAsync(buffer, 0, read);
-                            totalRead += read;
-
-                            if (canReportProgress) { int percent = (int)((totalRead * 100L) / total); progress.Report(percent); }
+                            if (attempt < maxAttempts && IsTransientStatusCode(response.StatusCode))
+                            {
+                                await Task.Delay(TimeSpan.FromSeconds(attempt * 2));
+                                continue;
+                            }
+                            throw new HttpRequestException($"Server returned {(int)response.StatusCode} ({response.ReasonPhrase}) for {url}");
                         }
+                        var total = response.Content.Headers.ContentLength ?? -1L;
+                        var canReportProgress = total != -1 && progress != null;
+                        using (var contentStream = await response.Content.ReadAsStreamAsync())
+                        using (var fileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                        {
+                            var totalRead = 0L;
+                            var buffer = new byte[8192];
+                            int read;
+                            while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            {
+                                await fileStream.WriteAsync(buffer, 0, read);
+                                totalRead += read;
+                                if (canReportProgress)
+                                {
+                                    int percent = (int)((totalRead * 100L) / total);
+                                    progress.Report(percent);
+                                }
+                            }
+                        }
+                        return;
                     }
                 }
+                catch (HttpRequestException ex)
+                {
+                    CleanupPartialDownload(destinationFilePath);
+                    if (attempt >= maxAttempts)
+                    {
+                        throw new HttpRequestException($"Failed to download after {maxAttempts} attempts. {ex.Message}", ex);
+                    }
+                    await Task.Delay(TimeSpan.FromSeconds(attempt * 2));
+                }
+                catch
+                {
+                    CleanupPartialDownload(destinationFilePath);
+                    throw;
+                }
+            }
+        }
+        private bool IsTransientStatusCode(HttpStatusCode statusCode)
+        {
+            return statusCode == HttpStatusCode.BadGateway ||
+                   statusCode == HttpStatusCode.ServiceUnavailable ||
+                   statusCode == HttpStatusCode.GatewayTimeout ||
+                   (int)statusCode == 429;
+        }
+        private void CleanupPartialDownload(string destinationFilePath)
+        {
+            if (!File.Exists(destinationFilePath))
+            {
+                return;
+            }
+            try
+            {
+                File.Delete(destinationFilePath);
+            }
+            catch
+            {
             }
         }
         private async Task ExtractPackageAsync(string pkgFilePath, string destinationPath, IProgress<int> progress = null)
@@ -278,7 +459,14 @@ namespace Xbox_360_BadUpdate_USB_Tool
                         int overallPercent = (int)(((currentPackageIndex - 1 + (percent / 100.0)) / totalPackages) * 100 * 0.5);
                         SetProgressBar(overallPercent);
                     });
-                    await DownloadFileAsync(pkg.DownloadUrl, tempFilePath, downloadProgress);
+                    try
+                    {
+                        await DownloadFileAsync(pkg.DownloadUrl, tempFilePath, downloadProgress);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException($"Unable to download {pkg.FileName}. {ex.Message}", ex);
+                    }
                 }
                 else { UpdateStatus($"Status: {pkg.FileName} already exists, skipping download");}
                 if (File.Exists(tempFilePath))
@@ -298,8 +486,20 @@ namespace Xbox_360_BadUpdate_USB_Tool
         }
         private void DeviceList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (DeviceList.SelectedItem is UsbDriveItem selectedDrive) { DevicePath = selectedDrive.RootPath; DriveSet = true; Debug.WriteLine($"Selected drive: {DevicePath}"); }
-            else { DevicePath = null; DriveSet = false; }
+            if (DeviceList.SelectedItem is UsbDriveItem selectedDrive)
+            {
+                DevicePath = selectedDrive.RootPath;
+                DriveSet = true;
+                UpdateFormatSelectionState(selectedDrive);
+                warningLabel.Visible = false;
+                Debug.WriteLine($"Selected drive: {DevicePath}");
+            }
+            else
+            {
+                DevicePath = null;
+                DriveSet = false;
+                UpdateFormatSelectionState(null);
+            }
         }
         private bool FormatDriveToFat32(string drivePath)
         {
@@ -376,87 +576,114 @@ namespace Xbox_360_BadUpdate_USB_Tool
         }
         private async void StartBtn_Click(object sender, EventArgs e)
         {
-            string usbPath;
-            if (badavatarToggle.Checked == true && badupdateToggle.Checked == true && abadmemunitToggle.Checked == true && badavatarhddToggle.Checked == true) { MessageBox.Show("Please select only one exploit method.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-            if (DeviceList.SelectedItem == null) { MessageBox.Show("Please select a Fat32 compatible device.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-            if (DeviceList.SelectedItem is UsbDriveItem selectedDrive) { usbPath = selectedDrive.RootPath; }
-            else { MessageBox.Show("Please select a Fat32 compatible device.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-            if (string.IsNullOrEmpty(usbPath) || !Directory.Exists(usbPath)) { MessageBox.Show("Please select a Fat32 compatible device.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-            if (!skipformatToggle.Checked)
+            try
             {
-                var confirm = MessageBox.Show(
-                    $"Are you sure you want to select {usbPath} as your Fat32 device to format and configure? This will erase all data on the device. Please" +
-                    $" ensure that this is the device that you want to use before you go ahead. I am not responsible for any accidental " +
-                    $"data loss on your behalf.",
-                    "Confirm Format",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning);
-                if (confirm != DialogResult.Yes) { UpdateStatus("Status: Format Cancelled"); return; }
-                UpdateStatus("Status: Formatting Device...");
-                ProgressBar.Value = 0;
-                bool formatSuccess = await Task.Run(() => FormatDriveToFat32(usbPath));
-                UpdateStatus("Status: Format Completed. Starting Downloads...");
-            }
-            else { UpdateStatus("Status: Skipping Format (per user request)..."); }
-            var packagesToDownload = GetSelectedPackages();
-            if (skipmainfilesToggle.Checked)
-            {
-                string[] mainFiles = { "RBB.zip", "Payload-XeUnshackle.zip", "Payload-FreeMyXe.zip" };
-                packagesToDownload = packagesToDownload
-                    .Where(pkg => !mainFiles.Contains(pkg.FileName, StringComparer.OrdinalIgnoreCase))
-                    .ToList();
-            }
-            else
-            {
-                if (skiprbbToggle.Checked)
+                string usbPath;
+                if (badavatarToggle.Checked == true && badupdateToggle.Checked == true && abadmemunitToggle.Checked == true && badavatarhddToggle.Checked == true) { MessageBox.Show("Please select only one exploit method.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                if (DeviceList.SelectedItem == null) { MessageBox.Show("Please select a FAT32-compatible device or browse to a mounted folder.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                if (DeviceList.SelectedItem is UsbDriveItem selectedDrive)
                 {
-                    packagesToDownload = packagesToDownload
-                        .Where(pkg => !string.Equals(pkg.FileName, "RBB.zip", StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-                if (_checkBoxDict.TryGetValue("freemyxeToggle", out var freeMyXeCb) && freeMyXeCb.Checked)
-                {
-                    packagesToDownload = packagesToDownload
-                        .Where(pkg => !string.Equals(pkg.FileName, "Payload-XeUnshackle.zip", StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-                if (_checkBoxDict.TryGetValue("xeunshackleToggle", out var xeUnshackleCb) && xeUnshackleCb.Checked)
-                {
-                    packagesToDownload = packagesToDownload
-                        .Where(pkg => !string.Equals(pkg.FileName, "Payload-FreeMyXe.zip", StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-                if (skipxexmenuToggle.Checked)
-                {
-                    packagesToDownload = packagesToDownload
-                        .Where(pkg => !string.Equals(pkg.FileName, "XeXMenu.zip", StringComparison.OrdinalIgnoreCase))
-                        .ToList();
-                }
-            }
-            _totalSteps = packagesToDownload.Count;
-            foreach (var pkg in packagesToDownload)
-            {
-                string tempFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp", pkg.FileName);
-                if (File.Exists(tempFilePath))
-                {
-                    using (var archive = ZipFile.OpenRead(tempFilePath))
-                    { 
-                        _totalSteps += archive.Entries.Count;
+                    usbPath = selectedDrive.RootPath;
+                    if (!selectedDrive.CanFormat && !skipformatToggle.Checked)
+                    {
+                        MessageBox.Show(
+                            "Formatting is only available for automatically detected Windows volumes. For a manually selected folder or mounted volume, enable Skip Format and make sure the target media is already FAT32-formatted.",
+                            "BadStick Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        UpdateStatus("Status: Manual folder selected; skipping format is required.");
+                        return;
                     }
+                }
+                else { MessageBox.Show("Please select a FAT32-compatible device or browse to a mounted folder.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                if (string.IsNullOrEmpty(usbPath) || !Directory.Exists(usbPath)) { MessageBox.Show("Please select a valid target device or folder.", "BadStick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                if (!skipformatToggle.Checked)
+                {
+                    var confirm = MessageBox.Show(
+                        $"Are you sure you want to select {usbPath} as your FAT32 device to format and configure? This will erase all data on the device. Please" +
+                        $" ensure that this is the device that you want to use before you go ahead. I am not responsible for any accidental " +
+                        $"data loss on your behalf.",
+                        "Confirm Format",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
+                    if (confirm != DialogResult.Yes) { UpdateStatus("Status: Format Cancelled"); return; }
+                    UpdateStatus("Status: Formatting Device...");
+                    ProgressBar.Value = 0;
+                    bool formatSuccess = await Task.Run(() => FormatDriveToFat32(usbPath));
+                    if (!formatSuccess)
+                    {
+                        MessageBox.Show("Failed to format the device.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        UpdateStatus("Status: Format Failed");
+                        return;
+                    }
+                    UpdateStatus("Status: Format Completed. Starting Downloads...");
+                }
+                else { UpdateStatus("Status: Skipping Format (per user request)..."); }
+                var packagesToDownload = GetSelectedPackages();
+                if (skipmainfilesToggle.Checked)
+                {
+                    string[] mainFiles = { "RBB.zip", "Payload-XeUnshackle.zip", "Payload-FreeMyXe.zip" };
+                    packagesToDownload = packagesToDownload
+                        .Where(pkg => !mainFiles.Contains(pkg.FileName, StringComparer.OrdinalIgnoreCase))
+                        .ToList();
                 }
                 else
                 {
-                    _totalSteps += 10;
+                    if (skiprbbToggle.Checked)
+                    {
+                        packagesToDownload = packagesToDownload
+                            .Where(pkg => !string.Equals(pkg.FileName, "RBB.zip", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                    }
+                    if (_checkBoxDict.TryGetValue("freemyxeToggle", out var freeMyXeCb) && freeMyXeCb.Checked)
+                    {
+                        packagesToDownload = packagesToDownload
+                            .Where(pkg => !string.Equals(pkg.FileName, "Payload-XeUnshackle.zip", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                    }
+                    if (_checkBoxDict.TryGetValue("xeunshackleToggle", out var xeUnshackleCb) && xeUnshackleCb.Checked)
+                    {
+                        packagesToDownload = packagesToDownload
+                            .Where(pkg => !string.Equals(pkg.FileName, "Payload-FreeMyXe.zip", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                    }
+                    if (skipxexmenuToggle.Checked)
+                    {
+                        packagesToDownload = packagesToDownload
+                            .Where(pkg => !string.Equals(pkg.FileName, "XeXMenu.zip", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+                    }
                 }
+                _totalSteps = packagesToDownload.Count;
+                foreach (var pkg in packagesToDownload)
+                {
+                    string tempFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp", pkg.FileName);
+                    if (File.Exists(tempFilePath))
+                    {
+                        using (var archive = ZipFile.OpenRead(tempFilePath))
+                        { 
+                            _totalSteps += archive.Entries.Count;
+                        }
+                    }
+                    else
+                    {
+                        _totalSteps += 10;
+                    }
+                }
+                _currentStep = 0;
+                var progress = new Progress<int>(percent => { ProgressBar.Value = percent; });
+                await DownloadAndExtractPackagesAsync(packagesToDownload, _checkBoxDict, usbPath, progress);
+                UpdateStatus("Status: Done! Device Ready.");
+                ProgressBar.Value = 100;
+                MessageBox.Show(this, "BadStick has finished setting up your device. Any packages you have included with your install have been neatly arranged on your device.", "Plug and Play!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Thread.Sleep(500);
+                await CountdownExitStatusAsync();
             }
-            _currentStep = 0;
-            var progress = new Progress<int>(percent => { ProgressBar.Value = percent; });
-            await DownloadAndExtractPackagesAsync(packagesToDownload, _checkBoxDict, usbPath, progress);
-            UpdateStatus("Status: Done! Device Ready.");
-            ProgressBar.Value = 100;
-            MessageBox.Show(this, "BadStick has finished setting up your device. Any packages you have included with your install have been neatly arranged on your device.", "Plug and Play!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Thread.Sleep(500);
-            await CountdownExitStatusAsync();
+            catch (Exception ex)
+            {
+                UpdateStatus("Status: Install failed");
+                MessageBox.Show(this, ex.Message, "BadStick Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void SelectAllToggle_CheckedChanged(object sender, EventArgs e)
         {
@@ -499,6 +726,25 @@ namespace Xbox_360_BadUpdate_USB_Tool
             skiprbbToggle.Enabled = !checkAll;
         }
         private void RefDrivesBtn_Click(object sender, EventArgs e) { LoadUsbDrives(); }
+        private void BrowseFolderBtn_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Select the folder or mounted drive to use as the USB target.";
+                dialog.ShowNewFolderButton = false;
+                if (!string.IsNullOrWhiteSpace(DevicePath) && Directory.Exists(DevicePath))
+                {
+                    dialog.SelectedPath = DevicePath;
+                }
+                if (dialog.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    return;
+                }
+                _manualUsbDrive = new UsbDriveItem(dialog.SelectedPath, "Selected Folder", canFormat: false, isManualSelection: true);
+                LoadUsbDrives();
+                UpdateStatus($"Status: Using manually selected folder: {dialog.SelectedPath}");
+            }
+        }
         private void widBtn_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             MessageBox.Show("Dashlaunch is not listed here, because it cannot be ran on BadUpdate " +
@@ -693,11 +939,7 @@ namespace Xbox_360_BadUpdate_USB_Tool
         private void Form2_Load(object sender, EventArgs e)
         {
             IsAdmin = IsRunAsAdmin();
-            if (!IsAdmin)
-            {
-                skipformatToggle.Checked = true;
-                skipformatToggle.Enabled = false;
-            }
+            UpdateFormatSelectionState(DeviceList.SelectedItem as UsbDriveItem);
         }
         private void discordToolStripMenuItem_Click(object sender, EventArgs e)
         {
