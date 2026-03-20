@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Xbox_360_BadStick;
 
 namespace Xbox_360_BadUpdate_USB_Tool
 {
