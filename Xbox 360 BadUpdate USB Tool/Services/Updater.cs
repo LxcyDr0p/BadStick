@@ -10,6 +10,7 @@ using System.Net.Http;
 using Xbox_360_BadStick.DTO;
 using Xbox_360_BadStick.Shared.EventArgs;
 using Xbox_360_BadStick.Shared.Enums;
+using System.IO.Compression;
 
 namespace Xbox_360_BadStick.Services
 {
@@ -33,14 +34,18 @@ namespace Xbox_360_BadStick.Services
                 c.Timeout = TimeSpan.FromSeconds(10);
             });
         }
-        
-        
+
+
         public async Task DoUpdate()
         {
             try
             {
-                var exePath = Assembly.GetExecutingAssembly().Location;
+                var exePath = Process.GetCurrentProcess().MainModule.FileName;
                 var exeDir = Path.GetDirectoryName(exePath);
+                var batPath = Path.Combine(Path.GetTempPath(), "update.bat");
+                var tempDir = Path.GetDirectoryName(batPath);
+
+                var pid = Process.GetCurrentProcess().Id;
                 var windowsName = GetWindowsVersionName();
                 var isLegacyOS = windowsName.StartsWith("Windows 7") || windowsName.StartsWith("Windows 8");
 
@@ -63,98 +68,81 @@ namespace Xbox_360_BadStick.Services
                 if (String.IsNullOrWhiteSpace(downloadCurrentLink) && String.IsNullOrWhiteSpace(downloadLegacyLink))
                     throw new Exception("No suitable asset found for this OS in latest release.");
 
-                if(isLegacyOS)
+                if (isLegacyOS)
                     downloadCurrentLink = downloadLegacyLink;
 
-                using (var response =
-                       await apiClient.GetAsync(downloadCurrentLink, HttpCompletionOption.ResponseHeadersRead))
+                using (var response = await apiClient.GetAsync(downloadCurrentLink, HttpCompletionOption.ResponseHeadersRead))
                 {
                     response.EnsureSuccessStatusCode();
 
                     using (var strf = await response.Content.ReadAsStreamAsync())
+                    using (var stwt = File.Open(Path.Combine(tempDir,"update.zip"), FileMode.Create))
                     {
-                        using (var stwt = File.Open("update.zip", FileMode.Create))
+                        byte[] buffer = new byte[8_192];
+                        int bytesRead;
+
+                        while ((bytesRead = stwt.Read(buffer, 0, buffer.Length))>0) 
                         {
-                            await stwt.CopyToAsync(strf);
+                            await stwt.WriteAsync(buffer, 0, bytesRead);
                         }
                     }
-                    
                 }
-                        
-                
-                
-                using (var wcJson = new System.Net.WebClient())
+
+                if (!Directory.Exists("UpdateTemp"))
+                    Directory.CreateDirectory("UpdateTemp");
+
+                ExtractZipFile(Path.Combine(tempDir, "update.zip"), tempDir);
+
+                var batContent = 
+                    $@"@echo off
+tasklist /FI ""PID eq {pid}"" 2>NUL |fing /I /N ""{pid}"">NUL
+:wait
+if ""%ERRORLEVEL%""==""0""(
+    timeout /t 1 /nobreak >null
+    goto wait
+)
+
+ren ""{exePath}"" ""{Path.GetFileName(exePath)}.old""
+
+xcopy /y /s ""."" ""{exeDir}""
+
+start """" ""{exePath}""
+";
+                File.WriteAllText("update.bat", batContent);
+                Process.Start(new ProcessStartInfo()
                 {
-                    wcJson.Headers.Add("User-Agent", "BadStick-Updater");
-                    string json = wcJson.DownloadString(apiUrl);
-                    dynamic release = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                    string downloadUrl = null;
-                    foreach (var asset in release.assets)
-                    {
-                        string name = asset.name.Value;
-                        if (isLegacyOS && name.Contains("Legacy"))
-                        {
-                            downloadUrl = asset.browser_download_url.Value;
-                            break;
-                        }
-                        else if (!isLegacyOS && !name.Contains("Legacy"))
-                        {
-                            downloadUrl = asset.browser_download_url.Value;
-                            break;
-                        }
-                    }
-
-                    if (downloadUrl == null)
-                        throw new Exception("No suitable asset found for this OS in latest release.");
-                    //startupLabel.Text = windowsName + " detected, installing compatible version...";
-                    string psScript = string.Format(@"
-try {{
-    Write-Host '[BadStick] Downloading update...'
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    $wc = New-Object System.Net.WebClient
-    $wc.DownloadFile('{0}','update.zip')
-
-    Write-Host '[BadStick] Extracting update...'
-    if (Test-Path 'UpdateTemp') {{ Remove-Item 'UpdateTemp' -Recurse -Force }}
-    Expand-Archive -Path 'update.zip' -DestinationPath 'UpdateTemp' -Force
-
-    Remove-Item 'update.zip' -Force
-    Copy-Item 'UpdateTemp\\*' -Destination '.' -Recurse -Force
-    Remove-Item 'UpdateTemp' -Recurse -Force
-
-    Write-Host '[BadStick] Launching updated application...'
-    Start-Process -FilePath '{1}'
-}} catch {{
-    $_ | Out-File 'updater.log' -Encoding UTF8
-    Write-Host 'Update failed — check updater.log'
-    exit 1
-}}
-", downloadUrl, exePath);
-
-                    string psPath = Path.Combine(exeDir, "updater.ps1");
-                    File.WriteAllText(psPath, psScript);
-                    string batContent = string.Format(@"
-@echo off
-powershell -NoProfile -ExecutionPolicy Bypass -File ""{0}""
-del %0
-", psPath);
-                    string batPath = Path.Combine(exeDir, "updater.bat");
-                    File.WriteAllText(batPath, batContent);
-                    Process.Start(new ProcessStartInfo()
-                        { FileName = batPath, UseShellExecute = true, CreateNoWindow = false });
-                    Environment.Exit(0);
-                }
+                    UseShellExecute = true,
+                    CreateNoWindow = true,
+                    FileName = "update.bat"
+                });
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
-        
+
+
+        private string ExtractZipFile(string zipPath, string destination)
+        {
+            if(!Directory.Exists(destination))
+                Directory.CreateDirectory(destination);
+
+            try
+            {
+                ZipFile.ExtractToDirectory(zipPath, destination);
+            }
+            catch (IOException ex)
+            { 
+                return $"There was an issue while extracting update: {ex.Message}";
+            }
+            return "Extracted";
+        }
+
         private string GetWindowsVersionName()
         {
             Version osVer = Environment.OSVersion.Version;
-            
+
             if (osVer.Major == 6 && osVer.Minor == 1) return "Windows 7";
             if (osVer.Major == 6 && osVer.Minor == 2) return "Windows 8";
             if (osVer.Major == 6 && osVer.Minor == 3) return "Windows 8.1";
@@ -162,13 +150,13 @@ del %0
             if (osVer.Major == 10 && osVer.Build >= 22000) return "Windows 11";
             return "Unknown Windows Version";
         }
-        
+
         public void DoCleanup()
         {
             if (File.Exists("./updater.bat") == true) { File.Delete("./updater.bat"); }
             if (File.Exists("./updater.txt") == true) { File.Delete("./updater.txt"); }
         }
-        
+
         private async Task<bool> IsInternetAvailableAsync()
         {
             try
@@ -183,23 +171,23 @@ del %0
 
                 var http = HttpClientFactory.GetClient("ping");
                 var response = await http.GetAsync("https://www.google.com");
-                
+
                 ProgressChanged?.Invoke(this, new ProgressReportEventArgs(100));
-                
+
                 return response.IsSuccessStatusCode;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 NoInetDetected?.Invoke(this, EventArgs.Empty);
                 return false;
             }
         }
-        
+
         public async Task CheckForUpdatesAsync()
         {
             if (!await IsInternetAvailableAsync())
                 return;
-            
+
             var http = HttpClientFactory.GetClient("pastebin");
             string latestVersion = await http.GetStringAsync("/raw/SHpqTNY0");
             latestVersion = latestVersion.Trim();
@@ -208,19 +196,19 @@ del %0
             {
                 return;
             }
-            
-            if(Shared.Settings.Legacy)
+
+            if (Shared.Settings.Legacy)
             {
-                UpdateFound?.Invoke(this, 
-                    new UpdateFoundEventArgs(){ UpdateType = UpdateType.Legacy});
+                UpdateFound?.Invoke(this,
+                    new UpdateFoundEventArgs() { UpdateType = UpdateType.Legacy });
                 return;
             }
-            
-            UpdateFound?.Invoke(this, 
-                new UpdateFoundEventArgs(){ UpdateType = UpdateType.Current});
-            
+
+            UpdateFound?.Invoke(this,
+                new UpdateFoundEventArgs() { UpdateType = UpdateType.Current });
+
         }
-        
+
         public async Task<string> GetCommunityBoardMessages()
         {
             try
@@ -230,7 +218,7 @@ del %0
                     Message = "Status - Checking for community messages...",
                     Progress = 30
                 });
-                var http = HttpClientFactory.GetClient("pastebin",null);
+                var http = HttpClientFactory.GetClient("pastebin", null);
                 string state = await http.GetStringAsync("/raw/sEsrQJve");
                 state = state.Trim().ToLowerInvariant();
 
@@ -239,9 +227,9 @@ del %0
                     return string.Empty;
                 }
                 ProgressChanged?.Invoke(this, new ProgressReportEventArgs(50));
-                
+
                 string messageText = await http.GetStringAsync("/raw/aJzwnQN4");
-                
+
                 ProgressChanged?.Invoke(this, new ProgressReportEventArgs(75));
 
                 return messageText.Trim();

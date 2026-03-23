@@ -21,7 +21,7 @@ namespace Xbox_360_BadStick
             _updater.ProgressChanged += On_UpdaterProgressChanged;
             _updater.UpdateFound += On_UpdaterUpdateFound;
             _updater.NoInetDetected += On_UpdaterNoInetDetected;
-            
+
             VerLabel.Text = $"BadStick {Shared.Settings.CurrentVersion}";
         }
 
@@ -34,7 +34,7 @@ namespace Xbox_360_BadStick
                 startupLabel.Text = "BadStick Lgeacy Update Available!";
                 return;
             }
-            
+
             ContinueBtn.Enabled = true;
             updateNotice.Visible = true;
             ContinueBtn.Text = "Update";
@@ -45,10 +45,10 @@ namespace Xbox_360_BadStick
 
         private void On_UpdaterProgressChanged(object sender, ProgressReportEventArgs e)
         {
-            startupLabel.Text = !string.IsNullOrWhiteSpace(e.Message)? e.Message : startupLabel.Text;
-            startupProgressBar.Value = e.Progress<=100? e.Progress : startupProgressBar.Maximum;
+            startupLabel.Text = !string.IsNullOrWhiteSpace(e.Message) ? e.Message : startupLabel.Text;
+            startupProgressBar.Value = e.Progress <= 100 ? e.Progress : startupProgressBar.Maximum;
         }
-        
+
         private void On_UpdaterNoInetDetected(object sender, EventArgs e)
         {
             fatalError.Visible = true;
@@ -60,18 +60,29 @@ namespace Xbox_360_BadStick
         {
             startupProgressBar.Value = 90;
             startupLabel.Text = "Status - Checking for administrator privileges...";
-            using (var identity = WindowsIdentity.GetCurrent()) {  var principal = new WindowsPrincipal(identity); return principal.IsInRole(WindowsBuiltInRole.Administrator); }
+            using (var identity = WindowsIdentity.GetCurrent()) { var principal = new WindowsPrincipal(identity); return principal.IsInRole(WindowsBuiltInRole.Administrator); }
         }
-        
 
-        
-        private void ExitBtn_Click(object sender, EventArgs e) { Application.Exit(); }
-        
+
+        private void ExitBtn_Click(object sender, EventArgs e)
+        { 
+            Application.Exit(); 
+        }
+
         private async void ContinueBtn_Click(object sender, EventArgs e)
         {
-            if (ContinueBtn.Text == "Update") { ContinueBtn.Enabled = false; await _updater.DoUpdate(); }
-            else { this.Hide(); Form2 Next = new Form2(); Next.Show(); }
+            if (ContinueBtn.Text == "Update")
+            {
+                ContinueBtn.Enabled = false;
+                await _updater.DoUpdate();
+                return;
+            }
+
+            this.Hide();
+            Form2 Next = new Form2();
+            Next.Show();
         }
+
         private void creditsLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             MessageBox.Show("This is for everyone who worked tirelessly to develop and bring BadUpdate to the community. " +
