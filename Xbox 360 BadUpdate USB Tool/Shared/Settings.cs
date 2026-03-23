@@ -6,6 +6,6 @@
         public static string CurrentVersion = "v2.1-Stable";
         
         public static bool DevMode = true;
-        public static bool Legacy = true;
+        public static bool Legacy = false;
     }
 }

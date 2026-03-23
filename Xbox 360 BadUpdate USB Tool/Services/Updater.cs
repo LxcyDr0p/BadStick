@@ -1,9 +1,7 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using System;
 using System.Diagnostics;
-using System.Reflection;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Net.Http;
@@ -11,6 +9,7 @@ using Xbox_360_BadStick.DTO;
 using Xbox_360_BadStick.Shared.EventArgs;
 using Xbox_360_BadStick.Shared.Enums;
 using System.IO.Compression;
+using Serilog;
 
 namespace Xbox_360_BadStick.Services
 {
@@ -33,6 +32,8 @@ namespace Xbox_360_BadStick.Services
                 c.BaseAddress = new Uri("https://api.github.com");
                 c.Timeout = TimeSpan.FromSeconds(10);
             });
+
+            Log.Information("Initialized updates.");
         }
 
 
@@ -43,13 +44,12 @@ namespace Xbox_360_BadStick.Services
                 var exePath = Process.GetCurrentProcess().MainModule.FileName;
                 var exeDir = Path.GetDirectoryName(exePath);
                 var batPath = Path.Combine(Path.GetTempPath(), "update.bat");
-                var tempDir = Path.GetDirectoryName(batPath);
+                var tempDir = Path.GetDirectoryName(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString(), "dummy.file"));
+                var updatePackage = Path.Combine(tempDir, "update.zip");
 
                 var pid = Process.GetCurrentProcess().Id;
                 var windowsName = GetWindowsVersionName();
                 var isLegacyOS = windowsName.StartsWith("Windows 7") || windowsName.StartsWith("Windows 8");
-
-                string apiUrl = "https://api.github.com/repos/LxcyDr0p/BadStick/releases/latest";
 
                 var apiClient = HttpClientFactory.GetClient("ghapi");
                 var responese = await apiClient.GetAsync("/repos/LxcyDr0p/BadStick/releases/latest");
@@ -71,61 +71,65 @@ namespace Xbox_360_BadStick.Services
                 if (isLegacyOS)
                     downloadCurrentLink = downloadLegacyLink;
 
+                Directory.CreateDirectory(tempDir);
+
                 using (var response = await apiClient.GetAsync(downloadCurrentLink, HttpCompletionOption.ResponseHeadersRead))
                 {
                     response.EnsureSuccessStatusCode();
 
                     using (var strf = await response.Content.ReadAsStreamAsync())
-                    using (var stwt = File.Open(Path.Combine(tempDir,"update.zip"), FileMode.Create))
+                    using (var stwt = File.Open(updatePackage, FileMode.Create))
                     {
                         byte[] buffer = new byte[8_192];
                         int bytesRead;
 
-                        while ((bytesRead = stwt.Read(buffer, 0, buffer.Length))>0) 
+                        while ((bytesRead = strf.Read(buffer, 0, buffer.Length)) > 0)
                         {
                             await stwt.WriteAsync(buffer, 0, bytesRead);
                         }
                     }
                 }
 
-                if (!Directory.Exists("UpdateTemp"))
-                    Directory.CreateDirectory("UpdateTemp");
+                ExtractZipFile(updatePackage, tempDir);
+                File.Delete(updatePackage);
 
-                ExtractZipFile(Path.Combine(tempDir, "update.zip"), tempDir);
-
-                var batContent = 
+                var batContent =
                     $@"@echo off
-tasklist /FI ""PID eq {pid}"" 2>NUL |fing /I /N ""{pid}"">NUL
 :wait
-if ""%ERRORLEVEL%""==""0""(
-    timeout /t 1 /nobreak >null
+tasklist /FI ""PID eq {pid}"" | find /I /N ""{pid}"" >NUL
+if ""%ERRORLEVEL%""==""0"" (
+    timeout /t 1 /nobreak >nul
     goto wait
 )
 
 ren ""{exePath}"" ""{Path.GetFileName(exePath)}.old""
-
-xcopy /y /s ""."" ""{exeDir}""
-
+xcopy /y /s ""{tempDir}\*.*"" ""{exeDir}""
 start """" ""{exePath}""
+del ""%~f0""
 ";
-                File.WriteAllText("update.bat", batContent);
+                File.WriteAllText(batPath, batContent);
                 Process.Start(new ProcessStartInfo()
                 {
                     UseShellExecute = true,
                     CreateNoWindow = true,
-                    FileName = "update.bat"
+                    FileName = batPath
                 });
+                Log.Information("Shutting down for update...");
+                Environment.Exit(0);
             }
             catch (Exception ex)
             {
-                throw;
+                Log.Error("Error while updating: {message}", ex.Message);
+                if (Log.IsEnabled(Serilog.Events.LogEventLevel.Debug))
+                    Log.Debug(ex.ToString());
             }
         }
 
 
         private string ExtractZipFile(string zipPath, string destination)
         {
-            if(!Directory.Exists(destination))
+            Log.Information("Extracting update file. {zip}", zipPath);
+            if (!Directory.Exists(destination))
                 Directory.CreateDirectory(destination);
 
             try
@@ -133,8 +137,14 @@ start """" ""{exePath}""
                 ZipFile.ExtractToDirectory(zipPath, destination);
             }
             catch (IOException ex)
-            { 
-                return $"There was an issue while extracting update: {ex.Message}";
+            {
+                Log.Error("IOException: ", ex);
+                return $"There was an issue while extracting update.";
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Exception: ", ex);
+                return $"There was an issue while extracting update.";
             }
             return "Extracted";
         }
@@ -153,6 +163,7 @@ start """" ""{exePath}""
 
         public void DoCleanup()
         {
+            Log.Information("Doing cleanup.");
             if (File.Exists("./updater.bat") == true) { File.Delete("./updater.bat"); }
             if (File.Exists("./updater.txt") == true) { File.Delete("./updater.txt"); }
         }
@@ -178,6 +189,7 @@ start """" ""{exePath}""
             }
             catch (Exception ex)
             {
+                Log.Error("Error while checking internet connection {message}, defaulting to false.", ex.Message);
                 NoInetDetected?.Invoke(this, EventArgs.Empty);
                 return false;
             }
@@ -194,16 +206,19 @@ start """" ""{exePath}""
 
             if (latestVersion == Shared.Settings.CurrentVersion)
             {
+                Log.Information("Latest version already installed, no need to update.");
                 return;
             }
 
             if (Shared.Settings.Legacy)
             {
+                Log.Information("Found legacy installation update.");
                 UpdateFound?.Invoke(this,
                     new UpdateFoundEventArgs() { UpdateType = UpdateType.Legacy });
                 return;
             }
 
+            Log.Information("Found current update.");
             UpdateFound?.Invoke(this,
                 new UpdateFoundEventArgs() { UpdateType = UpdateType.Current });
 
@@ -213,6 +228,8 @@ start """" ""{exePath}""
         {
             try
             {
+                Log.Information("Checking community messages...");
+
                 ProgressChanged?.Invoke(this, new ProgressReportEventArgs()
                 {
                     Message = "Status - Checking for community messages...",
@@ -232,12 +249,14 @@ start """" ""{exePath}""
 
                 ProgressChanged?.Invoke(this, new ProgressReportEventArgs(75));
 
+                Log.Information("Found message: {message}", messageText.Trim());
                 return messageText.Trim();
 
             }
             catch (Exception ex)
             {
-                return $"Error checking for community messages:\n{ex.Message}";
+                Log.Error("Exception while checking messages.", ex);
+                return $"Error checking for community messages.";
             }
         }
     }
