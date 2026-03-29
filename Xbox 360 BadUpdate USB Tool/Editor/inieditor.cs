@@ -1,13 +1,5 @@
 ﻿using FastColoredTextBoxNS;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Xbox_360_BadUpdate_USB_Tool;
 
@@ -23,7 +15,7 @@ namespace Xbox_360_BadStick
         public inieditor()
         {
             InitializeComponent();
-            VerLabel.Text = "BadStick " + Form1.currentver + "";
+            VerLabel.Text = $"BadStick {Shared.Settings.CurrentVersion}";
             TopMost = true;
         }
 

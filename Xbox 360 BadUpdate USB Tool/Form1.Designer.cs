@@ -1,4 +1,4 @@
-﻿namespace Xbox_360_BadUpdate_USB_Tool
+﻿namespace Xbox_360_BadStick
 {
     partial class Form1
     {
@@ -192,7 +192,7 @@
             // updateNotice
             // 
             this.updateNotice.BackColor = System.Drawing.Color.Transparent;
-            this.updateNotice.Image = global::Xbox_360_BadStick.Properties.Resources.Check;
+            //this.updateNotice.Image = global::Xbox_360_BadStick.Properties.Resources.Check;
             this.updateNotice.Location = new System.Drawing.Point(405, 90);
             this.updateNotice.Name = "updateNotice";
             this.updateNotice.Size = new System.Drawing.Size(41, 32);
@@ -204,7 +204,7 @@
             // discordLink
             // 
             this.discordLink.BackColor = System.Drawing.Color.Transparent;
-            this.discordLink.Image = global::Xbox_360_BadStick.Properties.Resources.discord;
+            //this.discordLink.Image = global::Xbox_360_BadStick.Properties.Resources.discord;
             this.discordLink.Location = new System.Drawing.Point(43, 185);
             this.discordLink.Name = "discordLink";
             this.discordLink.Size = new System.Drawing.Size(41, 32);
@@ -216,7 +216,7 @@
             // githubpicLink
             // 
             this.githubpicLink.BackColor = System.Drawing.Color.Transparent;
-            this.githubpicLink.Image = global::Xbox_360_BadStick.Properties.Resources.github;
+            //this.githubpicLink.Image = global::Xbox_360_BadStick.Properties.Resources.github;
             this.githubpicLink.Location = new System.Drawing.Point(0, 185);
             this.githubpicLink.Name = "githubpicLink";
             this.githubpicLink.Size = new System.Drawing.Size(41, 32);
@@ -228,7 +228,7 @@
             // fatalError
             // 
             this.fatalError.BackColor = System.Drawing.Color.Transparent;
-            this.fatalError.Image = global::Xbox_360_BadStick.Properties.Resources.red_x_on_network_icon;
+            //this.fatalError.Image = global::Xbox_360_BadStick.Properties.Resources.red_x_on_network_icon;
             this.fatalError.Location = new System.Drawing.Point(405, 90);
             this.fatalError.Name = "fatalError";
             this.fatalError.Size = new System.Drawing.Size(41, 32);
@@ -240,7 +240,7 @@
             // noadminWarning
             // 
             this.noadminWarning.BackColor = System.Drawing.Color.Transparent;
-            this.noadminWarning.Image = global::Xbox_360_BadStick.Properties.Resources.Security_And_Maintenance_Alert_Windows_10_version_21H2;
+            //this.noadminWarning.Image = global::Xbox_360_BadStick.Properties.Resources.Security_And_Maintenance_Alert_Windows_10_version_21H2;
             this.noadminWarning.Location = new System.Drawing.Point(405, 90);
             this.noadminWarning.Name = "noadminWarning";
             this.noadminWarning.Size = new System.Drawing.Size(41, 32);

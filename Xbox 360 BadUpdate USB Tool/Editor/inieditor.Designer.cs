@@ -162,7 +162,7 @@
             this.launchinieditor.CharHeight = 12;
             this.launchinieditor.CharWidth = 7;
             this.launchinieditor.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.launchinieditor.DefaultMarkerSize = 8;
+            //this.launchinieditor.DefaultMarkerSize = 8;
             this.launchinieditor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.launchinieditor.Font = new System.Drawing.Font("Courier New", 8F);
             this.launchinieditor.IsReplaceMode = false;
@@ -267,7 +267,7 @@
             this.jrpcinieditor.CharHeight = 12;
             this.jrpcinieditor.CharWidth = 7;
             this.jrpcinieditor.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.jrpcinieditor.DefaultMarkerSize = 8;
+            //this.jrpcinieditor.DefaultMarkerSize = 8;
             this.jrpcinieditor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.jrpcinieditor.Font = new System.Drawing.Font("Courier New", 8F);
             this.jrpcinieditor.IsReplaceMode = false;
@@ -371,7 +371,7 @@
             this.xbdminieditor.CharHeight = 12;
             this.xbdminieditor.CharWidth = 7;
             this.xbdminieditor.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.xbdminieditor.DefaultMarkerSize = 8;
+            //this.xbdminieditor.DefaultMarkerSize = 8;
             this.xbdminieditor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.xbdminieditor.Font = new System.Drawing.Font("Courier New", 8F);
             this.xbdminieditor.IsReplaceMode = false;
